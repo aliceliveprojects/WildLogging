@@ -7,3 +7,5 @@ We are currently using postcode as a primary data point for location.
 Reason is that the backend doesn't have the capability to search on location. 
 
 If we store location as lat-lon then we will be able to search on postcode, but _plot_ on location. This might work quite well. Need to add these data points into the dataset.
+
+2017-11-25 19:23:54 Done
