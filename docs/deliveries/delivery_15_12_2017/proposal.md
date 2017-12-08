@@ -6,6 +6,6 @@ Budget: 61
 [Features](https://trello.com/b/kt11GZlL/features)  
 [Investigations](https://trello.com/b/QxX9dY1H/investigations)  
 [Implementations](https://trello.com/b/4Ho1KMNu/implementations)  
-[Design](https://trello.com/b/MLSRKRu2/design)
-[Tasks](https://trello.com/b/QmXNmJnk/tasks)
+[Design](https://trello.com/b/MLSRKRu2/design)  
+[Tasks](https://trello.com/b/QmXNmJnk/tasks)  
 Effort Costs: 66
