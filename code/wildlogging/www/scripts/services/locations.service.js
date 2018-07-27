@@ -18,7 +18,23 @@
     $timeout
   ) {
     var service = {};
-    
+
+    service.NO_GEOLOCATION_OBJECT = "No access to geolocation";
+
+    service.getLocation = function() {
+      var defer = $q.defer();
+
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position){
+          defer.resolve(position);
+        },function(error){
+          defer.reject(error);
+        },{timeout:10000});
+      } else {
+        throw service.NO_GEOLOCATION_OBJECT;
+      }
+
+    };
 
     service.getMarkers = function(postcode){
       var deferred = $q.defer();

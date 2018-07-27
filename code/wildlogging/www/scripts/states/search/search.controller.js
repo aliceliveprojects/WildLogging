@@ -30,7 +30,7 @@
     $scope.$on('$destroy', vm.hardwareBackButton);
 
     //Controller below
-    var createMap = function() {
+    var createMap = function(position) {
       var latlng = L.latLng(53.471528, -2.241224);
       var mymap = L.map('mymap', {center: latlng, zoom: 16});
       
@@ -56,6 +56,13 @@
     var clusterMarkers = L.markerClusterGroup();
 
     vm.postcode = "M1 5GD";
+
+    vm.centerMap = function centerMap(){
+      locationsSrvc.getBrowserLocation().then(function getBrowserLocation(location){
+        createMap(location)
+      });
+    }
+
 
     vm.refreshMap = function(postcode) {
       vm.busy = true
