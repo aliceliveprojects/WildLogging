@@ -10,16 +10,19 @@
   locationsSrvc.$inject = [
     '$ionicPlatform',
     '$q',
+    '$http',
     '$timeout'
   ];
   function locationsSrvc(
     $ionicPlatform,
     $q,
+    $http,
     $timeout
   ) {
     var service = {};
 
     service.NO_GEOLOCATION_OBJECT = "No access to geolocation";
+    service.BAD_LOCATION_OBJECT = "Bad location object";
 
     service.getBrowserLocation = function getBrowserLocation() {
       var defer = $q.defer();
@@ -35,6 +38,32 @@
       }
 
     };
+
+    service.locationToPostcode = function locationToPostcode( location ) {
+      var defer  =$q.defer();
+      
+      var requestUrl = "";
+      if( angular.isObject(location)===true  ) {
+        if( (location.hasOwnProperty("lat"))&&(location.hasOwnProperty("lon")) ) {
+          requestUrl = "api.postcodes.io/postcodes?lon="+location.lon+"&lat="+location.lat;
+        }
+      }
+      if(requestUrl !== "") {
+        $http.get( requestUrl )
+          .success(function (data, status, headers, config ) {
+            console.log('locationsSrvc.locationToPostcode: success, got ',data);
+            defer.resolve( data );
+          })
+          .error(function ( data, status, header, config ) {
+            console.log('locationsSrvc.locationToPostcode: FAILED, ', data, status, header );
+            throw( status );
+            defer.reject( status );
+          });
+        return defer.promise;
+      };
+      throw( service.BAD_LOCATION_OBJECT, location);
+    }
+
 
     service.getPostcodes = function getPostcodes(location, radius_m) {
 
