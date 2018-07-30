@@ -11,8 +11,7 @@
       '$timeout',
       'locationsSrvc',
       '$state'
-      ];
-
+  ];
 
   function searchCtrl(
       $ionicPlatform,
@@ -42,34 +41,33 @@
       }).addTo(mymap);
 
       return mymap;
-    }
+    };
     var removeMarker = function(map, marker){
       map.removeLayer(marker);
-    }
+    };
     var removeAllMarkers = function(){
       mymap.removeLayer(clusterMarkers);
       clusterMarkers = L.markerClusterGroup(); //re-new clusters 
-    }
+    };
 
     vm.busy = false;
-    var mymap = createMap()
+    var mymap = createMap();
     var clusterMarkers = L.markerClusterGroup();
 
     vm.postcode = "M1 5GD";
 
     vm.centerMap = function centerMap(){
       locationsSrvc.getBrowserLocation().then(function getBrowserLocation(location){
-        createMap(location)
+        createMap(location);
       });
-    }
-
+    };
 
     vm.refreshMap = function(postcode) {
-      vm.busy = true
+      vm.busy = true;
       removeAllMarkers();
-      
+
       postcode = postcode.replace(/\s+/g, ''); //remove spaces
-      
+
       locationsSrvc.getMarkers(postcode)
         .then(function(markersList){
           markersList.forEach(function(e,index){
@@ -82,13 +80,13 @@
           vm.busy = false;
         });
 
-    }
+    };
     vm.clearMap = function(){
       removeAllMarkers();
-    }
+    };
     vm.goHome = function() {
       $state.go("home");
-    }
+    };
   }
-    
+
 })();

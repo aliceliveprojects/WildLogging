@@ -3,7 +3,8 @@
 
 	angular
 		.module('app.searchState', [
-			'ionic'
+			'ionic',
+      'app.connectionError'
 		])
 		.config(function($stateProvider) {
 			$stateProvider
@@ -12,6 +13,6 @@
 					templateUrl: 'scripts/states/search/search.html',
 					controller: 'searchCtrl as vm',
 					cache: false
-				})
+				});
 		});
 })();

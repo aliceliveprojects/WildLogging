@@ -21,7 +21,7 @@
 
     service.NO_GEOLOCATION_OBJECT = "No access to geolocation";
 
-    service.getLocation = function() {
+    service.getBrowserLocation = function getBrowserLocation() {
       var defer = $q.defer();
 
       if (navigator.geolocation) {
@@ -35,6 +35,16 @@
       }
 
     };
+
+    service.getPostcodes = function getPostcodes(location, radius_m) {
+
+    };
+
+    service.getLocation = function getLocation(postcode) {
+
+    };
+
+    /////
 
     service.getMarkers = function(postcode){
       var deferred = $q.defer();
@@ -98,11 +108,11 @@
               date: '156687654356'
             }
           ]
-        )
-      }, 3000)
+        );
+      }, 3000);
 
-      return deferred.promise
-    }
+      return deferred.promise;
+    };
     return service;
   }
 })();
