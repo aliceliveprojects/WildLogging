@@ -14,11 +14,13 @@
 					controller: 'searchCtrl as vm',
           resolve: {
             location: function(locationsSrvc) {
-              locationsSrvc.getBrowserLocation();
+              return locationsSrvc.getBrowserLocation();
             },
-            postcode: function() {
-              locationsSrvc.getBrowserLocation(locationsSrvc)
-                .then(function (position){ locationsSrvc.locationToPostcode(position); } );
+            postcode: function(locationsSrvc) {
+              locationsSrvc.getBrowserLocation()
+                .then(function (position){
+                  return locationsSrvc.locationToPostcode(position);
+                } );
             }
           },
 					cache: false

@@ -29,41 +29,39 @@
 
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function(position){
-          defer.resolve(position);
+          defer.resolve(position.coords);
         },function(error){
           defer.reject(error);
         },{timeout:10000});
       } else {
+        console.log("locationsSrvc.getBrowserLocation: exception");
         throw service.NO_GEOLOCATION_OBJECT;
       }
-
+      return defer.promise;
     };
 
-    service.locationToPostcode = function locationToPostcode( location ) {
+    service.locationToPostcode = function locationToPostcode( coords ) {
       var defer  =$q.defer();
-      
+
       var requestUrl = "";
-      if( angular.isObject(location)===true  ) {
-        if( (location.hasOwnProperty("lat"))&&(location.hasOwnProperty("lon")) ) {
-          requestUrl = "api.postcodes.io/postcodes?lon="+location.lon+"&lat="+location.lat;
+      if( angular.isObject( coords ) === true  ) {
+        if( ( coords.latitude ) && ( coords.longitude ) ) {
+          requestUrl = "https://api.postcodes.io/postcodes?lon="+coords.longitude+"&lat="+coords.latitude;
         }
       }
       if(requestUrl !== "") {
         $http.get( requestUrl )
           .success(function (data, status, headers, config ) {
-            console.log('locationsSrvc.locationToPostcode: success, got ',data);
             defer.resolve( data );
           })
           .error(function ( data, status, header, config ) {
-            console.log('locationsSrvc.locationToPostcode: FAILED, ', data, status, header );
             throw( status );
             defer.reject( status );
           });
         return defer.promise;
       };
-      throw( service.BAD_LOCATION_OBJECT, location);
-    }
-
+      throw( service.BAD_LOCATION_OBJECT, coords );
+    };
 
     service.getPostcodes = function getPostcodes(location, radius_m) {
 

@@ -6,20 +6,28 @@
       .controller('searchCtrl', searchCtrl);
 
   searchCtrl.$inject = [
-      '$ionicPlatform',
-      '$scope',
-      '$timeout',
-      'locationsSrvc',
-      '$state'
+    '$ionicPlatform',
+    '$scope',
+    '$timeout',
+    'locationsSrvc',
+    '$state',
+    // from state.resolve
+    'location',
+    'postcode'
   ];
 
   function searchCtrl(
-      $ionicPlatform,
-      $scope,
-      $timeout,
-      locationsSrvc,
-      $state
+    $ionicPlatform,
+    $scope,
+    $timeout,
+    locationsSrvc,
+    $state,
+    location,
+    postcode
   ) {
+
+    console.log("searchCtrl: location, postcode - ",location,postcode);
+
     var vm = angular.extend(this, {
     });
 
@@ -29,10 +37,13 @@
     $scope.$on('$destroy', vm.hardwareBackButton);
 
     //Controller below
-    var createMap = function(position) {
-      var latlng = L.latLng(53.471528, -2.241224);
+    var createMap = function( position ) {
+      //var latlng = L.latLng(53.471528, -2.241224);
+      console.log("createMap: position = ",position);
+      var latlng = L.latLng( position.latitude, position.longitude );
+
       var mymap = L.map('mymap', {center: latlng, zoom: 16});
-      
+
       L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
         attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
         maxZoom: 18,
@@ -51,15 +62,19 @@
     };
 
     vm.busy = false;
-    var mymap = createMap();
+    var mymap = createMap( location );
     var clusterMarkers = L.markerClusterGroup();
 
-    vm.postcode = "M1 5GD";
+    //vm.postcode = M1 5GD";
+    if( angular.isObject( postcode ) === true ) {
+      vm.postcode = postcode[ 0 ].postcode;
+    } else {
+      vm.postcode = "W1T 2PR"; // central london tells us we have the wrong location
+      // TRIGGER EXCEPTION / ERROR
+    }
 
     vm.centerMap = function centerMap(){
-      locationsSrvc.getBrowserLocation().then(function getBrowserLocation(location){
         createMap(location);
-      });
     };
 
     vm.refreshMap = function(postcode) {
