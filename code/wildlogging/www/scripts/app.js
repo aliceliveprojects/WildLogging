@@ -12,7 +12,14 @@ angular.module('starter', [
   'app.locations'
 ])
 
-.run(function($ionicPlatform, $state) {
+  .run(function($ionicPlatform, $state, $rootScope) {
+
+    $rootScope.$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams, error) {
+      event.preventDefault();
+      $state.get('about').error = { code: 123, description: 'Exception stack trace' }
+      return $state.go('about');
+    });
+
   $ionicPlatform.ready(function() {
     if(window.cordova && window.cordova.plugins.Keyboard) {
       // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard

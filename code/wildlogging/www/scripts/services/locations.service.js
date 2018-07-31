@@ -23,6 +23,7 @@
 
     service.NO_GEOLOCATION_OBJECT = "No access to geolocation";
     service.BAD_LOCATION_OBJECT = "Bad location object";
+    service.BAD_POSTCODE = "Bad postcode";
 
     service.getBrowserLocation = function getBrowserLocation() {
       var defer = $q.defer();
@@ -40,35 +41,67 @@
       return defer.promise;
     };
 
-    service.locationToPostcode = function locationToPostcode( coords ) {
-      var defer  =$q.defer();
+
+    service.getPostcodes = function getPostcodes(location, radius_m) {
+      return service.locationToPostcode( location, radius_m, 1 );
+    };
+
+    // coords: an object with a 'latitude' and 'longitude' property
+    // radius: integer specifying radius (optional)
+    // limit: maximum result count (optional)
+    // after promise: returns a list of postcode objects
+    service.locationToPostcode = function locationToPostcode( coords, radius, limit ) {
+      var defer  = $q.defer();
 
       var requestUrl = "";
       if( angular.isObject( coords ) === true  ) {
         if( ( coords.latitude ) && ( coords.longitude ) ) {
           requestUrl = "https://api.postcodes.io/postcodes?lon="+coords.longitude+"&lat="+coords.latitude;
         }
+        if( ( angular.isDefined(radius)===true ) && ( angular.isInteger(radius)===true ) ) {
+          requestUrl = requestUrl + "&radius=" + radius;
+        }
+        if( ( angular.isDefined(limit)===true ) && ( angular.isInteger(limit)===true ) ) {
+          requestUrl = requestUrl + "&limit=" + limit;
+        }
       }
-      if(requestUrl !== "") {
+      if(requestUrl !== "" ) {
         $http.get( requestUrl )
           .success(function (data, status, headers, config ) {
             defer.resolve( data );
           })
-          .error(function ( data, status, header, config ) {
-            throw( status );
-            defer.reject( status );
+          .error(function ( data, status, headers, config ) {
+            throw new Error( status );
+            //defer.reject( status );
           });
         return defer.promise;
       };
-      throw( service.BAD_LOCATION_OBJECT, coords );
+      throw new Error( service.BAD_LOCATION_OBJECT, coords );
     };
 
-    service.getPostcodes = function getPostcodes(location, radius_m) {
 
-    };
+    // postcode: a string
+    // after promise: returns a location object (with latitude and longitude properties)
+    service.getLocation = function getLocation( postcode ) {
+      var defer = $q.defer();
 
-    service.getLocation = function getLocation(postcode) {
-
+      var requestUrl = "";
+      if( angular.isDefined( postcode ) ) {
+        requestUrl = "https://api.postcodes.io/postcodes/" + postcode;
+      }
+      if( requestUrl !== "" ) {
+        $http.get( requestUrl )
+          .success(function ( data, status, headers, config ) {
+            console.log( data );
+            defer.resolve( data )
+          } )
+          .error( function ( data, status, headers, config ) {
+            throw new Error( status );
+            //defer.reject( status );
+          } );
+        return defer.promise;
+      }
+      throw new Error( service.BAD_POSTCODE );
     };
 
     /////
