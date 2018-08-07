@@ -10,6 +10,7 @@
     '$scope',
     '$timeout',
     'locationsSrvc',
+    'speciesSrvc',
     '$state',
     // from state.resolve
     'location',
@@ -21,6 +22,7 @@
     $scope,
     $timeout,
     locationsSrvc,
+    speciesSrvc,
     $state,
     location,
     postcode
@@ -35,6 +37,35 @@
         //called when hardware back button pressed
     }, 100);
     $scope.$on('$destroy', vm.hardwareBackButton);
+
+    /*-- TEST
+    // find a species
+    speciesSrvc.getSuggestedSpeciesNames( "rabbit" ).then(
+      function gotRabbits( speciesNames ) {
+        console.log(" found that wabbit", speciesNames );
+      },
+      function failedGotRabbits( error ) {
+        console.log(" that wascally wabbit", error );
+      }
+      ); --*/
+    speciesSrvc.registerSpecies( "Lord Sitar" ).then(
+      function registeredSpecies( data ){
+        console.log( "registered species ", data );
+      },
+      function failedRegisteredSpecies( error ) {
+        console.log(" failed to register a species ", error);
+      }
+    );
+/*
+    speciesSrvc.getRegisteredSpecies("test").then(
+      function gotRegisteredSpecies( data ) {
+        console.log("queried for species 'test':", data );
+      },
+      function failedGetRegisteredSpecies( error ) {
+        console.log(" failed to get species 'test': ", error );
+      }
+    );
+*/
 
     //Controller below
     var createMap = function( position ) {

@@ -16,13 +16,13 @@
       }
     </script>-->
 
-    <link href="lib/ionic/css/ionic.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
-    
+    <link href="lib/ionic/css/ionic.css" rel="stylesheet"/>
+    <link href="css/style.css" rel="stylesheet"/>
+
     <!-- Leaflet! -->
     <link rel="stylesheet" href="lib/leaflet/dist/leaflet.css"/>
     <script src="lib/leaflet/dist/leaflet.js"></script>
-    
+
     <!-- Leaflet MarkerCluster! -->
     <link rel="stylesheet" href="lib/leaflet.markercluster/dist/MarkerCluster.css" />
     <link rel="stylesheet" href="lib/leaflet.markercluster/dist/MarkerCluster.Default.css" />
@@ -35,10 +35,10 @@
     <!-- ionic/angularjs js -->
     <script src="lib/ionic/js/ionic.bundle.js"></script>
     <script src="lib/ng-datalist/ng-datalist.js"></script>
-    
+
     <!-- cordova script (this will be a 404 during development) -->
     <script src="cordova.js"></script>
-    
+
     <!-- your app's js -->
     <script src="scripts/app.js"></script>
 
@@ -47,19 +47,26 @@
 
     <!-- modules and services -->
     <script src="scripts/services/locations.service.js"></script>
-    
+    <script src="scripts/services/api.service.js"></script>
+
     <script src="scripts/states/home/home.module.js"></script>
     <script src="scripts/states/home/home.controller.js"></script>
-    
+
     <script src="scripts/states/search/search.module.js"></script>
     <script src="scripts/states/search/search.controller.js"></script>
-    
+
     <script src="scripts/states/about/about.module.js"></script>
     <script src="scripts/states/about/about.controller.js"></script>
 
     <!-- restlet -->
     <script src="lib/theurbanwild.restlet/module.js"></script>
 
+    <!-- angular-ui-notification -->
+    <script src="lib/angular-ui-notification/angular-ui-notification.js"></script>
+    <link href="lib/angular-ui-notification/angular-ui-notification.css"/>
+
+    <!-- credentials hack -->
+    <script src="scripts/credentials.js"></script>
 
   </head>
   <body ng-app="starter">

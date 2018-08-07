@@ -41,7 +41,7 @@
       return defer.promise;
     };
 
-
+    // wrapper for locationToPostcode
     service.getPostcodes = function getPostcodes(location, radius_m) {
       return service.locationToPostcode( location, radius_m, 1 );
     };
