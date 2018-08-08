@@ -96,8 +96,7 @@
       var endpointUri = service.baseRestletURL + "things/?name="+speciesName;
       return($http({method:"GET",url:endpointUri}));
 
-
-      var defer = $q.defer;
+/*      var defer = $q.defer;
 
       $http( {
         method: "GET",
@@ -109,7 +108,7 @@
         console.log( "getSpeciesFailure", data );
         defer.reject( error )
       } );
-      return defer.promise;
+      return defer.promise;*/
     };
 
 
@@ -155,22 +154,74 @@
   sightingsSrvc.$inject = [
     '$ionicPlatform',
     '$q',
-    '$timeout'
+    '$timeout',
+    '$http',
+    'theurbanwild'
   ];
   function sightingsSrvc(
     $ionicPlatform,
     $q,
-    $timeout
+    $timeout,
+    $http,
+    theurbanwild
   ) {
     var service = {};
 
-    service.getSightings = function ( postcode, dateFrom, dateTo, thingsReference ) {
-      
+    service.baseRestletURL = "https://theurbanwild.restlet.net/v1/";
+
+    service.getSightings = function getSightings( postcode, dateFrom, dateTo, thingsReference ) {
+      // sightings are 'events'
+
+      function addParameter( starting, parameter, value) {
+        return( starting+(starting.length>0?"&":"")+
+                encodeURIComponent( parameter )+"="+
+                encodeURIComponent( value ) );
+      }
+
+      var parameters = "";
+      if (angular.isDefined(postcode) ) {
+        parameters = addParameter( parameters, "postcode", sanitisePostcode( postcode ) );
+      }
+      if (angular.isDefined(dateFrom) ) {
+        parameters = addParameter( parameters, "dateFrom", dateFrom );
+      }
+      if (angular.isDefined(dateTo) ) {
+        parameters = addParameter( parameters, "dateTo", dateTo );
+      }
+      if (angular.isDefined(thingsReference) ) {
+        parameters = addParameter( parameters, "thing", thingsReference );
+      }
+
+      var endpointUri = service.baseRestletURL + "events/?"+parameters;
+
+      console.log( "sightingsSrvc.getSightings: getting  "+endpointUri );
+
+      return($http({method:"GET",url:endpointUri}));
     };
 
-    service.registerSighting = function registerSighting( postcode, location, thingsRefrence ) {
-      
-    }
+    service.registerSighting = function registerSighting( postcode, location, thingsReference ) {
+      var event = {
+        date: (new Date).getTime()
+      };
+      if( angular.isDefined( postcode ) ) {
+        event.postcode = sanitisePostcode( postcode );
+      }
+      if( angular.isDefined( location ) ) {
+        event.lat = location.lat;
+        event.lon = location.lon;
+      }
+      if( angular.isDefined( thingsReference ) ) {
+        event.thing = thingsReference;
+      }
+      console.log( "sightingsSrvc.registerSighting registering ", event );
+      return theurbanwild.postEvents( event );
+    };
+
+    // standardises a postcode for data storage
+    // @TODO, maybe - for now just returns inbounf postcode
+    var sanitisePostcode = function sanitisePostcode( postcode ) {
+      return postcode;
+    };
 
     //
     return service;

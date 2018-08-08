@@ -11,6 +11,7 @@
     '$timeout',
     'locationsSrvc',
     'speciesSrvc',
+    'sightingsSrvc',
     '$state',
     // from state.resolve
     'location',
@@ -23,6 +24,7 @@
     $timeout,
     locationsSrvc,
     speciesSrvc,
+    sightingsSrvc,
     $state,
     location,
     postcode
@@ -38,17 +40,18 @@
     }, 100);
     $scope.$on('$destroy', vm.hardwareBackButton);
 
-    /*-- TEST
+    //-- TEST
     // find a species
-    speciesSrvc.getSuggestedSpeciesNames( "rabbit" ).then(
+/*    speciesSrvc.getSuggestedSpeciesNames( "rabbit" ).then(
       function gotRabbits( speciesNames ) {
-        console.log(" found that wabbit", speciesNames );
+        console.log(" found that wabbit", speciesNames );  
       },
       function failedGotRabbits( error ) {
         console.log(" that wascally wabbit", error );
       }
-      ); --*/
-    speciesSrvc.registerSpecies( "Lord Sitar" ).then(
+    );
+*/
+/*    speciesSrvc.registerSpecies( "Lord Sitar" ).then(
       function registeredSpecies( data ){
         console.log( "registered species ", data );
       },
@@ -56,6 +59,7 @@
         console.log(" failed to register a species ", error);
       }
     );
+*/
 /*
     speciesSrvc.getRegisteredSpecies("test").then(
       function gotRegisteredSpecies( data ) {
@@ -66,6 +70,23 @@
       }
     );
 */
+    sightingsSrvc.registerSighting( "W1T2PR", {lat:1,lon:-0.2}, "2bbd8080-9636-11e8-96a2-632bdefa9a39" ).then(
+      function registerSightingsSuccess( data ) {
+        console.log("search.controller.js:registerSightingsSuccess", data );
+      },
+      function registerSightingsError( error ) {
+        console.log("search.controller.js:registerSightingsError", error );
+      }
+    );
+
+    sightingsSrvc.getSightings(  ).then(
+      function gotSightings( data ) {
+        console.log( data );
+      },
+      function failedGetSightings( error ) {
+        console.log( error );
+      }
+    );
 
     //Controller below
     var createMap = function( position ) {
