@@ -11,18 +11,30 @@
         <div class="item item-dark" ng-click="vm.goAbout()">
           About Wild Logging
         </div>
-      </ion-content>  
+      </ion-content>
     </ion-side-menu>
 
     <ion-side-menu-content drag-content="false">
       <ion-content class="has-header has-footer" scroll="false">
         Home Screen Content
 
+        <form action="#" ng-submit="vm.handleFormSubmit()" name="homeForm">
+          <label for="postcode">postcode</label>
+          <input type="text" ng-required="true" placeholder="Postcode" name="postcode" ng-model="vm.homeForm.postcode" ng-keydown="vm.validatePostcodeKeypress" ng-change="vm.postcodeChange()"
+            x-ng-pattern="vm.postcodeValidator"
+            ng-model-options="{allowInvalid: true}"
+            bs-typeahead
+            bs-options="vm.getPostcodes($viewValue)"
+          >
+        </form>
+
       </ion-content>
     </ion-side-menu-content>
-  </ion-side-menus>  
+  </ion-side-menus>
 
   <ion-footer-bar class="bar-dark row">
   </ion-footer-bar>
 </ion-view>
-  
+
+
+

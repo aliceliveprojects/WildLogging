@@ -25,6 +25,8 @@
     service.BAD_LOCATION_OBJECT = "Bad location object";
     service.BAD_POSTCODE = "Bad postcode";
 
+    service.POSTCODE_VALIDATION_REGEX = "^(GIR 0AA)|((([A-Z-[QVX]][0-9][0-9]?)|(([A-Z-[QVX]][A-Z-[IJZ]][0-9][0-9]?)|(([A-Z-[QVX]][0-9][A-HJKSTUW])|([A-Z-[QVX]][A-Z-[IJZ]][0-9][ABEHMNPRVWXY]))))\s?[0-9][A-Z-[CIKMOV]]{2})$";
+
     service.getBrowserLocation = function getBrowserLocation() {
       var defer = $q.defer();
 
@@ -79,6 +81,14 @@
       throw new Error( service.BAD_LOCATION_OBJECT, coords );
     };
 
+
+    service.getPostcodesFromPartial = function getPostcodesFromPartial( partial ) {
+      if( partial.length>1 ) {
+        var requestUrl = "https://api.postcodes.io/postcodes?q=" + partial;
+        return $http.get( requestUrl );
+      }
+      return undefined;
+    };
 
     // postcode: a string
     // after promise: returns a location object (with latitude and longitude properties)

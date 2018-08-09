@@ -12,6 +12,6 @@
 					templateUrl: 'scripts/states/home/home.html',
 					controller: 'homeCtrl as vm',
 					cache: false
-				})
+				});
 		});
 })();
