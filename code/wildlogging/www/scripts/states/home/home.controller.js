@@ -9,7 +9,9 @@
     '$ionicPlatform',
     '$scope',
     '$timeout',
+    '$q',
     'locationsSrvc',
+    'speciesSrvc',
     '$state',
     '$ionicSideMenuDelegate'
   ];
@@ -17,15 +19,17 @@
   function homeCtrl(
       $ionicPlatform,
       $scope,
-      $timeout,
-      locationsSrvc,
+    $timeout,
+    $q,
+    locationsSrvc,
+    speciesSrvc,
       $state,
       $ionicSideMenuDelegate
   ) {
     var vm = angular.extend(this, {
     });
 
-    vm.homeForm={postcode:""};
+    vm.homeForm={};//{postcode:""};
     vm.postcodeValidator = locationsSrvc.POSTCODE_VALIDATION_REGEX;
 
     vm.hardwareBackButton = $ionicPlatform.registerBackButtonAction(function() {
@@ -59,28 +63,42 @@
       //e.event.preventDefault();
     };
 
+    //    vm.speciesList = ["aaa","bbb","ccc"];
+
+    vm.getSpecies = function getSpecies(partial) {
+      var defer = $q.defer();
+      speciesSrvc.getSuggestedSpeciesNames( partial ).then(
+        function gotSpeciesNames( results ) {
+          defer.resolve(results);
+        },
+        function gotSpeciesNamesError( error ) {
+          console.log( "error, somehow" );
+          defer.reject( error );
+        }
+      );
+      return defer.promise;
+    };
+
     vm.postcodeChange = function postcodeChange() {
       console.log("postcode errors: ", vm.homeForm );
       console.log("postcode now "+vm.homeForm.postcode);
     };
 
     vm.getPostcodes = function getPostcodes(partial) {
-      return ["aaa","bbb","ccc","ddd","eee","fff","ggg"];
-      console.log("getting postcodes for "+partial);
+      var defer = $q.defer();
       locationsSrvc.getPostcodesFromPartial( partial ).then(
-        function gotPostcodes( payload ) {
-          console.log("got postcode payload of ",payload);
-          console.log("returning ",payload.data.result);
-
-
-
-          return payload.data.result
-            .reduce( function(acc,obj){console.log("acc:",acc); return acc.concat(obj.postcode);}, [] );
-        },
-        function error( error ) {
-          console.log("getPostcodes: error ",error);
-        }
-      );
+        function gotPostcodes( results ) {
+            defer.resolve( results );
+          },
+          function error( error ) {
+            console.log("getPostcodes: error ",error);
+            defer.reject( error );
+          }
+        ).catch(function(e){
+          console.log("EXCEPTION",e);
+          return[];
+        });
+      return defer.promise;
     };
 
 //    vm.validatePostcodeKeypress = function validatePostcodeKeypress(a,b,c) {

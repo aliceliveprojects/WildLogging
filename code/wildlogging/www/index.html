@@ -8,13 +8,13 @@
     <link rel="manifest" href="manifest.json">
 
     <!-- un-comment this code to enable service worker
-    <script>
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('service-worker.js')
-          .then(() => console.log('service worker installed'))
-          .catch(err => console.log('Error', err));
-      }
-    </script>-->
+         <script>
+         if ('serviceWorker' in navigator) {
+         navigator.serviceWorker.register('service-worker.js')
+         .then(() => console.log('service worker installed'))
+         .catch(err => console.log('Error', err));
+         }
+         </script>-->
 
     <link href="lib/ionic/css/ionic.css" rel="stylesheet"/>
     <link href="css/style.css" rel="stylesheet"/>
@@ -42,6 +42,11 @@
     <!-- your app's js -->
     <script src="scripts/app.js"></script>
 
+    <!-- boostrap -->
+    <link href="lib/bootstrap/bootstrap.min.css" rel="stylesheet"/>
+    <link href="lib/bootstrap/ui-bootstrap-2.5.0-csp.css" rel="stylesheet"/ >
+    <script src="lib/bootstrap/ui-bootstrap-tpls-2.5.0.min.js" ></script>
+
     <!-- directives -->
     <script src="scripts/directives/connectionError.directive.js"></script>
 
@@ -66,9 +71,10 @@
     <link href="lib/angular-ui-notification/angular-ui-notification.css"/>
 
     <!-- angular-strap -->
+<!-- 
     <script src="lib/angular-strap/angular-strap.js"></script>
     <script src="lib/angular-strap/angular-strap.tpl.js"></script>
-
+-->
     <!-- credentials hack -->
     <script src="scripts/credentials.js"></script>
 

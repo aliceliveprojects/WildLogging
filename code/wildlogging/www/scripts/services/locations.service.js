@@ -83,11 +83,25 @@
 
 
     service.getPostcodesFromPartial = function getPostcodesFromPartial( partial ) {
-      if( partial.length>1 ) {
+      var defer = $q.defer();
+      console.log("getPostcodesFromPartial " + partial );
+      if( partial.length>0 ) {
         var requestUrl = "https://api.postcodes.io/postcodes?q=" + partial;
-        return $http.get( requestUrl );
+        $http.get( requestUrl ).then (
+          function getPostcodeFromPartialResponse(data){
+            console.log("got ",data);
+            defer.resolve( data.data.result );
+          },
+          function getPostcodeFromPartialResponseError( error ) {
+            console.log("boo, ", error);
+            defer.reject( error );
+          }
+        );
+      } else {
+        throw "getPostcodesFromPartial - called with nothing";
       }
-      return undefined;
+      return defer.promise;
+//      return [];//undefined;
     };
 
     // postcode: a string

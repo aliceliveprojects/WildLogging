@@ -6,7 +6,8 @@
 angular.module('starter', [
   'ionic',
   'ngAnimate',
-  'mgcrea.ngStrap',
+  //'mgcrea.ngStrap',
+  'ui.bootstrap',
   'ng-datalist',
   'ui-notification',
   'app.homeState',

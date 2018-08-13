@@ -46,69 +46,40 @@
       if( cleanedSearchTerms.length>0 ) {
         requestUrl = "https://www.itis.gov/ITISWebService/jsonservice/searchForAnyMatch?jsonP=JSON_CALLBACK&srchKey=" + cleanedSearchTerms;
       }
-      console.log( "species lookup URL: "+requestUrl );
+      //console.log( "species lookup URL: "+requestUrl );
       if( requestUrl !== "" ) {
         console.log( "looking up species: " + searchTerms );
-        $http.jsonp( requestUrl , { jsonpCallbackParam: "JSON_CALLBACK" } )
-          .then( function (data, status, headers, config ) {
-            var names = data.data.anyMatchList.map(
-              function(item){
-                return item.commonNameList.commonNames.map(
-                  function(item){
-                    return( item.commonName );
-                  } ).reduce(
-                    function(a,b) {
-                      return( a.push(b) );
-                    }
-                  );
-                  defer.resolve( names );
-              } ).filter(
-                function( value, index, self ){
-                  return( (self.indexOf(value) === index) && (value!==null) );
-                }
-              );
-            console.log( " REDUCED TO: ", names);
-          }, function( error ) {
-            console.log( "getSuggeestedSpeciesNames error: ", error );
-            defer.reject( error );
-          } );
+        return $http.jsonp( requestUrl , { jsonpCallbackParam: "JSON_CALLBACK" } )
+          .then(
+            function response(data, status, headers, config ) {
+              var names = data.data.anyMatchList.map(function(item,index){
+		            return(item.commonNameList.commonNames.map(
+			            function(commonname,indextrose){
+				            return(commonname.commonName);
+			            }
+                ));
+	            })
+                  .reduce(function(flat,toFlatten){
+		                return (flat.concat(toFlatten) );
+	                },[] )
+	                .filter(function(name, index, self){
+		                return( ( name!== null ) && ( index === self.indexOf(name) ) );
+	                });
+              //console.log( " REDUCED TO: ", names);
+                            defer.resolve( names.slice(0,10) );
+              return( names.slice(0,10) );
+            }, function( error ) {
+              console.log( "getSuggeestedSpeciesNames error: ", error );
+//              defer.reject( error );
+            } );
+      } else {
+        defer.resolve();
       }
-      return defer.promise;
     };
 
-    // gets 0 or more species based on name.
-/*    service.getRegisteredSpecies = function getRegisteredSpecies( speciesName ) {
-      var config = {
-        name: speciesName
-      };
-      console.log( "getRegisteredSpecies: using config of ", config );
-
-      return ( //function xyz() {
-        theurbanwild.getThings( config )
-          .then(
-            function(d){return d.data;},
-            function(e){console.log("error:",e); return (e);}
-          )
-      //}
-      );
-      };*/
     service.getRegisteredSpecies = function getRegisteredSpecies( speciesName ) {
       var endpointUri = service.baseRestletURL + "things/?name="+speciesName;
       return($http({method:"GET",url:endpointUri}));
-
-/*      var defer = $q.defer;
-
-      $http( {
-        method: "GET",
-        url: endpointUri,
-      } ).then(function getSpeciesSuccess(data, status, headers, config ) {
-        console.log( "getSpeciesSuccess", data );
-        defer.resolve( data );
-      }, function getSpeciesFailure( error ) {
-        console.log( "getSpeciesFailure", data );
-        defer.reject( error )
-      } );
-      return defer.promise;*/
     };
 
 
@@ -145,8 +116,6 @@
       );
     };
 
-
-    //
     return service;
   }
 

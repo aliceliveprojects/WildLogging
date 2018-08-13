@@ -18,15 +18,40 @@
       <ion-content class="has-header has-footer" scroll="false">
         Home Screen Content
 
-        <form action="#" ng-submit="vm.handleFormSubmit()" name="homeForm">
-          <label for="postcode">postcode</label>
-          <input type="text" ng-required="true" placeholder="Postcode" name="postcode" ng-model="vm.homeForm.postcode" ng-keydown="vm.validatePostcodeKeypress" ng-change="vm.postcodeChange()"
-            x-ng-pattern="vm.postcodeValidator"
-            ng-model-options="{allowInvalid: true}"
-            bs-typeahead
-            bs-options="vm.getPostcodes($viewValue)"
-          >
-        </form>
+        <div class="form-group">
+          <form action="#" ng-submit="vm.handleFormSubmit()" name="homeForm">
+            <label for="species" >What did you see?</label>
+            <input type="text"
+              class="form-control"
+              ng-required="true"
+              placeholder="Species"
+              name="species"
+              ng-model="vm.homeForm.species"
+              id="species"
+
+              typeahead-min-length="3"
+              typeahead-editable="false"
+              uib-typeahead="species for species in vm.getSpecies($viewValue)"
+            />
+
+            <label for="postcode">Where did you see it?</label>
+            <input type="text" ng-required="true" placeholder="Postcode" name="postcode" ng-model="vm.homeForm.postcode"
+              class="form-control"
+              ng-required="true"
+              placeholder="Postcode"
+              name="postcode"
+              id="postcode"
+
+              uib-typeahead="postcode.postcode for postcode in vm.getPostcodes($viewValue)"
+              typeahead-min-length="3"
+              typeahead-editable="false"
+
+              ng-change="vm.postcodeChange()"
+              ng-pattern="vm.postcodeValidator"
+              ng-keydown="vm.validatePostcodeKeypress"
+            />
+          </form>
+        </div>
 
       </ion-content>
     </ion-side-menu-content>
