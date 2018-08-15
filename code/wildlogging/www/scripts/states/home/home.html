@@ -18,40 +18,54 @@
       <ion-content class="has-header has-footer" scroll="false">
         Home Screen Content
 
-        <div class="form-group">
-          <form action="#" ng-submit="vm.handleFormSubmit()" name="homeForm">
+        <ng-form  ng-submit="handleFormSubmit()" name="vm.homeForm" ng-controller="homeCtrl as vm" >
+          <div class="form-group">
+
             <label for="species" >What did you see?</label>
             <input type="text"
+              autocomplete="off"
               class="form-control"
               ng-required="true"
               placeholder="Species"
               name="species"
-              ng-model="vm.homeForm.species"
+              ng-model="vm.species"
               id="species"
+              ng-change="vm.revalidateForm(homeForm);"
 
               typeahead-min-length="3"
               typeahead-editable="false"
               uib-typeahead="species for species in vm.getSpecies($viewValue)"
             />
+            <span ng-show="vm.homeForm.species.$valid">✓</span>
 
             <label for="postcode">Where did you see it?</label>
-            <input type="text" ng-required="true" placeholder="Postcode" name="postcode" ng-model="vm.homeForm.postcode"
-              class="form-control"
+            <input type="text"
+              autocomplete="off"
               ng-required="true"
               placeholder="Postcode"
               name="postcode"
+              ng-model="vm.postcode"
+              class="form-control"
               id="postcode"
+              ng-change="vm.revalidateForm(homeForm);"
 
-              uib-typeahead="postcode.postcode for postcode in vm.getPostcodes($viewValue)"
-              typeahead-min-length="3"
+              typeahead-min-length="1"
               typeahead-editable="false"
+              uib-typeahead="postcode.postcode for postcode in vm.getPostcodes($viewValue)"
 
-              ng-change="vm.postcodeChange()"
-              ng-pattern="vm.postcodeValidator"
-              ng-keydown="vm.validatePostcodeKeypress"
             />
-          </form>
-        </div>
+            <span ng-show="vm.homeForm.postcode.$valid">✓</span>
+
+            <div class="buttons">
+              <button ng-disabled="vm.searchItButtonDisabled" ion-button color="primary" round solid>Search It!</button>
+              <button ng-disabled="vm.logItButtonDisabled" ion-button color="danger" round solid ng-click="vm.handleLogIt()">Log It!</button>
+
+            </div>
+            <div>
+              isMyLocation:{{vm.isMyLocation}}, vm.searchItButtonDisabled:{{vm.searchItButtonDisabled}}, vm.logItButtonDisabled:{{vm.logItButtonDisabled}}
+            </div>
+          </div>
+        </ng-form>
 
       </ion-content>
     </ion-side-menu-content>

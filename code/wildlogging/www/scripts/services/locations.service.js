@@ -60,10 +60,10 @@
         if( ( coords.latitude ) && ( coords.longitude ) ) {
           requestUrl = "https://api.postcodes.io/postcodes?lon="+coords.longitude+"&lat="+coords.latitude;
         }
-        if( ( angular.isDefined(radius)===true ) && ( angular.isInteger(radius)===true ) ) {
+        if( ( angular.isDefined(radius)===true ) && ( Number.isInteger(radius)===true ) ) {
           requestUrl = requestUrl + "&radius=" + radius;
         }
-        if( ( angular.isDefined(limit)===true ) && ( angular.isInteger(limit)===true ) ) {
+        if( ( angular.isDefined(limit)===true ) && ( Number.isInteger(limit)===true ) ) {
           requestUrl = requestUrl + "&limit=" + limit;
         }
       }
@@ -84,16 +84,13 @@
 
     service.getPostcodesFromPartial = function getPostcodesFromPartial( partial ) {
       var defer = $q.defer();
-      console.log("getPostcodesFromPartial " + partial );
       if( partial.length>0 ) {
         var requestUrl = "https://api.postcodes.io/postcodes?q=" + partial;
         $http.get( requestUrl ).then (
           function getPostcodeFromPartialResponse(data){
-            console.log("got ",data);
             defer.resolve( data.data.result );
           },
           function getPostcodeFromPartialResponseError( error ) {
-            console.log("boo, ", error);
             defer.reject( error );
           }
         );
@@ -101,7 +98,6 @@
         throw "getPostcodesFromPartial - called with nothing";
       }
       return defer.promise;
-//      return [];//undefined;
     };
 
     // postcode: a string
@@ -116,12 +112,12 @@
       if( requestUrl !== "" ) {
         $http.get( requestUrl )
           .success(function ( data, status, headers, config ) {
-            console.log( data );
+            console.log( "locationsSrvc.getLocation:", data );
             defer.resolve( data )
           } )
           .error( function ( data, status, headers, config ) {
             throw new Error( status );
-            //defer.reject( status );
+            defer.reject( status );
           } );
         return defer.promise;
       }

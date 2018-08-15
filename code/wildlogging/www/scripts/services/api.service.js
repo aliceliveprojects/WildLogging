@@ -46,9 +46,7 @@
       if( cleanedSearchTerms.length>0 ) {
         requestUrl = "https://www.itis.gov/ITISWebService/jsonservice/searchForAnyMatch?jsonP=JSON_CALLBACK&srchKey=" + cleanedSearchTerms;
       }
-      //console.log( "species lookup URL: "+requestUrl );
       if( requestUrl !== "" ) {
-        console.log( "looking up species: " + searchTerms );
         return $http.jsonp( requestUrl , { jsonpCallbackParam: "JSON_CALLBACK" } )
           .then(
             function response(data, status, headers, config ) {
@@ -59,18 +57,17 @@
 			            }
                 ));
 	            })
-                  .reduce(function(flat,toFlatten){
-		                return (flat.concat(toFlatten) );
-	                },[] )
-	                .filter(function(name, index, self){
-		                return( ( name!== null ) && ( index === self.indexOf(name) ) );
-	                });
-              //console.log( " REDUCED TO: ", names);
-                            defer.resolve( names.slice(0,10) );
-              return( names.slice(0,10) );
+              .reduce(function(flat,toFlatten){
+                return (flat.concat(toFlatten) );
+	            },[] )
+	            .filter(function(name, index, self){
+		            return( ( name!== null ) && ( index === self.indexOf(name) ) );
+	            });
+              //defer.resolve( names.slice(0,100) );
+              return( names.slice(0,100) );
             }, function( error ) {
-              console.log( "getSuggeestedSpeciesNames error: ", error );
-//              defer.reject( error );
+              //console.log( "getSuggeestedSpeciesNames error: ", error );
+              defer.reject( error );
             } );
       } else {
         defer.resolve();

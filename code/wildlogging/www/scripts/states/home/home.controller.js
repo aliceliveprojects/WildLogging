@@ -17,28 +17,60 @@
   ];
 
   function homeCtrl(
-      $ionicPlatform,
-      $scope,
+    $ionicPlatform,
+    $scope,
     $timeout,
     $q,
     locationsSrvc,
     speciesSrvc,
-      $state,
-      $ionicSideMenuDelegate
+    $state,
+    $ionicSideMenuDelegate
   ) {
     var vm = angular.extend(this, {
+
     });
 
-    vm.homeForm={};//{postcode:""};
+/*    vm.homeForm={
+      postcode:"",
+      species:""
+      };*/
+
+    vm.postcode="";
+    vm.species="";
+
+    vm.logItButtonDisabled=true;
+    vm.searchItButtonDisabled=true;
+    vm.isMyLocation = false;
+    vm.myPostcode = "";
     vm.postcodeValidator = locationsSrvc.POSTCODE_VALIDATION_REGEX;
 
     vm.hardwareBackButton = $ionicPlatform.registerBackButtonAction(function() {
         //called when hardware back button pressed
     }, 100);
 
-    $scope.$on('$destroy', vm.hardwareBackButton);
+    $scope.$on( '$stateChangeSuccess', vm.initialiseView );
 
+    $scope.$on( '$destroy', vm.hardwareBackButton);
+/*
+    $scope.$watch('vm.postcode', function(o,n){
+      console.log("postcode CHANGED!!!!!",o,n);
+      vm.revalidateForm();
+    });
+    $scope.$watch('vm.species', function(o,n){
+      console.log("species CHANGED!!!!!",o,n);
+      vm.revalidateForm();
+    });
+*/
     //Controller below
+    vm.initialiseView = function initialiseView() {
+      console.log("INITIALISING VIEW");
+      vm.handleIsMyLocation();
+    };
+
+    vm.setform = function setform(f){
+      console.log("vm.setform - got ",f);
+    };
+
     vm.toggleLeftMenu = function() {
       $ionicSideMenuDelegate.toggleLeft();
     };
@@ -58,12 +90,18 @@
     };
 
     vm.handleFormSubmit = function handleFormSubmit(e) {
-      window.alert("postcode: "+vm.homeForm.postcode);
-      console.log("e:",e);
-      //e.event.preventDefault();
+      vm.handleSearchIt();
     };
 
-    //    vm.speciesList = ["aaa","bbb","ccc"];
+    vm.handleSearchIt = function handleSearchIt() {
+      // this is 'search it'
+      window.alert("Search It\npostcode: "+vm.postcode+"\nspecies:"+vm.species);
+      console.log("e:",e);
+    };
+
+    vm.handleLogIt = function handleLogIt() {
+      window.alert("Log It\npostcode: "+vm.postcode+"\nspecies:"+vm.species);
+    };
 
     vm.getSpecies = function getSpecies(partial) {
       var defer = $q.defer();
@@ -77,11 +115,6 @@
         }
       );
       return defer.promise;
-    };
-
-    vm.postcodeChange = function postcodeChange() {
-      console.log("postcode errors: ", vm.homeForm );
-      console.log("postcode now "+vm.homeForm.postcode);
     };
 
     vm.getPostcodes = function getPostcodes(partial) {
@@ -101,14 +134,79 @@
       return defer.promise;
     };
 
-//    vm.validatePostcodeKeypress = function validatePostcodeKeypress(a,b,c) {
-//      console.log(a,b,c);
-//    };
+    vm.revalidateForm = function revalidateForm() {
+      console.log("REVALIDATING!", vm.homeForm);
+      // search
+      console.log(" postcode.$valid==="+vm.homeForm.postcode.$valid);
+      if(vm.homeForm.postcode.$valid===true) {
+        vm.searchItButtonDisabled=false;
+      } else {
+        vm.searchItButtonDisabled=true;
+      }
+
+      if( vm.myPostcode===vm.postcode) {
+        vm.isMyLocation = true;
+      } else {
+        vm.isMyLocation = false;
+      }
+
+      // log
+      console.log(" species.$valid==="+vm.homeForm.species.$valid);
+      if( (vm.homeForm.species.$valid===true) && (vm.isMyLocation===true) ) {
+        vm.logItButtonDisabled=false;
+      } else {
+        vm.logItButtonDisabled=true;
+      }
+    };
 
     ////
-    function showPosition(position) {
+
+
+    vm.maybeSetPostcodeToHere = function maybeSetPostcodeToHere( newpostcode ) {
+      //      if ( !angular.isDefined( vm.postcode ) || ( !vm.homeForm.postcode ) ) {
+      //if(vm.postcode.$dirty===false) {
+      //if(vm.postcode==="") {
+//      if(vm.homeForm.postcode.$pristine) {
+//        console.log("homeform pristine");
+      vm.myPostcode = newpostcode;
+      vm.postcode = newpostcode;
+      vm.homeForm.postcode.$setValidity( "postcode", true );
+      vm.homeForm.postcode.$valid = true;
+      vm.revalidateForm();
+      //}
+    };
+
+    vm.handleIsMyLocation = function handleIsMyLocation() {
+      locationsSrvc.getBrowserLocation().then(
+        function gotBrowserLocation( position ){
+          console.log("handleIsMyLocation: position = ",position);
+          locationsSrvc.locationToPostcode( position, 100, 1 ).then(
+            function gotPostcodeFromPosition( results ) {
+              console.log( results.result[0] );
+              // postcode is in result.postcode
+              vm.maybeSetPostcodeToHere( results.result[0].postcode );
+            },
+            function errorPostcodeFromPosition( error ) {
+              console.log(error);
+            }
+          );
+        },
+        function errorBrowserLocation( error ){
+          alert("errorBrowserLocation:",error);
+        }
+      );
+    };
+
+
+    ////
+/*    function showPosition(position) {
       window.alert("Latitude: " + position.coords.latitude +
       " Longitude: " + position.coords.longitude);
-    }
+      }*/
+
+    this.$onInit = function onInit() {
+      console.log("*******onInit!**********");
+      vm.initialiseView();
+    };
   }
 })();
