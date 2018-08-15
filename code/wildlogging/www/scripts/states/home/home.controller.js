@@ -51,16 +51,7 @@
     $scope.$on( '$stateChangeSuccess', vm.initialiseView );
 
     $scope.$on( '$destroy', vm.hardwareBackButton);
-/*
-    $scope.$watch('vm.postcode', function(o,n){
-      console.log("postcode CHANGED!!!!!",o,n);
-      vm.revalidateForm();
-    });
-    $scope.$watch('vm.species', function(o,n){
-      console.log("species CHANGED!!!!!",o,n);
-      vm.revalidateForm();
-    });
-*/
+
     //Controller below
     vm.initialiseView = function initialiseView() {
       console.log("INITIALISING VIEW");
@@ -89,9 +80,9 @@
       }
     };
 
-    vm.handleFormSubmit = function handleFormSubmit(e) {
-      vm.handleSearchIt();
-    };
+//    vm.handleFormSubmit = function handleFormSubmit(e) {
+//      vm.handleSearchIt();
+//    };
 
     vm.handleSearchIt = function handleSearchIt() {
       // this is 'search it'
@@ -152,7 +143,9 @@
 
       // log
       console.log(" species.$valid==="+vm.homeForm.species.$valid);
-      if( (vm.homeForm.species.$valid===true) && (vm.isMyLocation===true) ) {
+      console.log(" species invalid = "+vm.homeForm.species.$invalid);
+      console.log(vm.homeForm.species);
+      if( ((vm.homeForm.species.$invalid===true)) && (vm.isMyLocation===true) ) {
         vm.logItButtonDisabled=false;
       } else {
         vm.logItButtonDisabled=true;
@@ -163,23 +156,19 @@
 
 
     vm.maybeSetPostcodeToHere = function maybeSetPostcodeToHere( newpostcode ) {
-      //      if ( !angular.isDefined( vm.postcode ) || ( !vm.homeForm.postcode ) ) {
-      //if(vm.postcode.$dirty===false) {
       //if(vm.postcode==="") {
-//      if(vm.homeForm.postcode.$pristine) {
-//        console.log("homeform pristine");
-      vm.myPostcode = newpostcode;
-      vm.postcode = newpostcode;
-      vm.homeForm.postcode.$setValidity( "postcode", true );
-      vm.homeForm.postcode.$valid = true;
-      vm.revalidateForm();
-      //}
+      if(vm.homeForm.postcode.$pristine) {
+        vm.myPostcode = newpostcode;
+        vm.postcode = newpostcode;
+        vm.homeForm.postcode.$setValidity( "postcode", true );
+        vm.homeForm.postcode.$valid = true;
+        vm.revalidateForm();
+      }
     };
 
     vm.handleIsMyLocation = function handleIsMyLocation() {
       locationsSrvc.getBrowserLocation().then(
         function gotBrowserLocation( position ){
-          console.log("handleIsMyLocation: position = ",position);
           locationsSrvc.locationToPostcode( position, 100, 1 ).then(
             function gotPostcodeFromPosition( results ) {
               console.log( results.result[0] );
@@ -198,14 +187,7 @@
     };
 
 
-    ////
-/*    function showPosition(position) {
-      window.alert("Latitude: " + position.coords.latitude +
-      " Longitude: " + position.coords.longitude);
-      }*/
-
     this.$onInit = function onInit() {
-      console.log("*******onInit!**********");
       vm.initialiseView();
     };
   }

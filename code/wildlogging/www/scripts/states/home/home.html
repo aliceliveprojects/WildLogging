@@ -18,19 +18,19 @@
       <ion-content class="has-header has-footer" scroll="false">
         Home Screen Content
 
-        <ng-form  ng-submit="handleFormSubmit()" name="vm.homeForm" ng-controller="homeCtrl as vm" >
+        <ng-form name="vm.homeForm" ng-controller="homeCtrl as vm" >
           <div class="form-group">
 
             <label for="species" >What did you see?</label>
             <input type="text"
               autocomplete="off"
               class="form-control"
-              ng-required="true"
+              ng-required="false"
               placeholder="Species"
               name="species"
               ng-model="vm.species"
               id="species"
-              ng-change="vm.revalidateForm(homeForm);"
+              ng-change="vm.revalidateForm();"
 
               typeahead-min-length="3"
               typeahead-editable="false"
@@ -47,7 +47,7 @@
               ng-model="vm.postcode"
               class="form-control"
               id="postcode"
-              ng-change="vm.revalidateForm(homeForm);"
+              ng-change="vm.revalidateForm();"
 
               typeahead-min-length="1"
               typeahead-editable="false"
@@ -57,12 +57,11 @@
             <span ng-show="vm.homeForm.postcode.$valid">✓</span>
 
             <div class="buttons">
-              <button ng-disabled="vm.searchItButtonDisabled" ion-button color="primary" round solid>Search It!</button>
+              <button ng-disabled="vm.searchItButtonDisabled" ion-button color="primary" round solid ng-click="vm.handleSearchIt()">Search It!</button>
               <button ng-disabled="vm.logItButtonDisabled" ion-button color="danger" round solid ng-click="vm.handleLogIt()">Log It!</button>
 
             </div>
             <div>
-              isMyLocation:{{vm.isMyLocation}}, vm.searchItButtonDisabled:{{vm.searchItButtonDisabled}}, vm.logItButtonDisabled:{{vm.logItButtonDisabled}}
             </div>
           </div>
         </ng-form>

@@ -1,5 +1,12 @@
 /* Empty. Add your own CSS if you like */
 
+ul.dropdown-menu {
+  /* make the drop-down list scrollable and overflowable! */
+  height:50% !important;
+  overflow-y: scroll;
+}
+
+
 .ng-modal-overlay {
   /* A dark translucent div that covers the whole screen */
   position:absolute;

@@ -63,8 +63,7 @@
 	            .filter(function(name, index, self){
 		            return( ( name!== null ) && ( index === self.indexOf(name) ) );
 	            });
-              //defer.resolve( names.slice(0,100) );
-              return( names.slice(0,100) );
+              return( names /*.slice(0,100) */ ); /* re-enble a limiter! */
             }, function( error ) {
               //console.log( "getSuggeestedSpeciesNames error: ", error );
               defer.reject( error );
