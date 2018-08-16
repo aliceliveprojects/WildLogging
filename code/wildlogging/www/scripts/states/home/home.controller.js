@@ -12,6 +12,7 @@
     '$q',
     'locationsSrvc',
     'speciesSrvc',
+    'sightingsSrvc',
     '$state',
     '$ionicSideMenuDelegate'
   ];
@@ -23,6 +24,7 @@
     $q,
     locationsSrvc,
     speciesSrvc,
+    sightingsSrvc,
     $state,
     $ionicSideMenuDelegate
   ) {
@@ -80,18 +82,66 @@
       }
     };
 
-//    vm.handleFormSubmit = function handleFormSubmit(e) {
-//      vm.handleSearchIt();
-//    };
-
     vm.handleSearchIt = function handleSearchIt() {
       // this is 'search it'
       window.alert("Search It\npostcode: "+vm.postcode+"\nspecies:"+vm.species);
-      console.log("e:",e);
+      //vm.goSearch( vm.postcode );
+      if( vm.postcode ) {
+        $state.go('searchpostcode',{ "postcode": vm.postcode });
+      }
     };
 
     vm.handleLogIt = function handleLogIt() {
       window.alert("Log It\npostcode: "+vm.postcode+"\nspecies:"+vm.species);
+      // has to perform https://trello.com/c/QAvEzIPT/57-logging-preparation-process
+      // 1. prep the living thing
+      // 2. invoke logging process
+      //    1. postcode
+      //    2. location
+      //    3. date
+      //    4. living thing reference UUID
+      // 3. push to restlet
+      // 4. fail?
+      // 5. logging feedback
+      //    1. postcode
+      //    2. living thing reference
+      //    3. date
+      var livingThing = speciesSrvc.registerSpecies( vm.species ).then( // 1.
+        function registeredSpeciesOk( confirmedLivingThing ) {
+          console.log(confirmedLivingThing);
+          sightingsSrvc.registerSighting( // 2.1 -> 2.4, 3
+            vm.postcode,
+            vm.location,
+            confirmedLivingThing.id
+          ).then(
+            function registeredSpeciesOkAndPostedSightingOk(success){ // 5
+              var now = new Date();
+              var dateFromEpoch = now.getTime();
+              /*
+              dateFrom.setHours(0,0,0,0); // midnight
+              var dateTo = new Date();
+              dateTo.setHours(23,59,59,9999) */
+              var dateToEpoch = dateFromEpoch - ( 24*60*60 );
+              sightingsSrvc.getSightings( vm.postcode,
+                                          dateFromEpoch,
+                                          dateToEpoch,
+                                          confirmedLivingThing.id ).then(
+                                            function getSightingsOk( payload ) {
+                                              // @TODO
+                                            },
+                                            function getSightingsError( error ) {
+                                              // @TODO
+                                            }
+                                          );
+            },
+            function registeredSpeciesOkButPostedSightingFail(error){ // 4
+            }
+          );
+        },
+        function registeredSpeciesFail( error ) {
+          console.log("registeredSpeciesFail: ",error);
+        }
+      );
     };
 
     vm.getSpecies = function getSpecies(partial) {
@@ -126,10 +176,7 @@
     };
 
     vm.revalidateForm = function revalidateForm() {
-      console.log("REVALIDATING!", vm.homeForm);
-      // search
-      console.log(" postcode.$valid==="+vm.homeForm.postcode.$valid);
-      if(vm.homeForm.postcode.$valid===true) {
+      if(vm.homeForm.postcode.$invalid===true) {
         vm.searchItButtonDisabled=false;
       } else {
         vm.searchItButtonDisabled=true;
@@ -141,10 +188,6 @@
         vm.isMyLocation = false;
       }
 
-      // log
-      console.log(" species.$valid==="+vm.homeForm.species.$valid);
-      console.log(" species invalid = "+vm.homeForm.species.$invalid);
-      console.log(vm.homeForm.species);
       if( ((vm.homeForm.species.$invalid===true)) && (vm.isMyLocation===true) ) {
         vm.logItButtonDisabled=false;
       } else {
@@ -153,7 +196,6 @@
     };
 
     ////
-
 
     vm.maybeSetPostcodeToHere = function maybeSetPostcodeToHere( newpostcode ) {
       //if(vm.postcode==="") {
@@ -171,8 +213,11 @@
         function gotBrowserLocation( position ){
           locationsSrvc.locationToPostcode( position, 100, 1 ).then(
             function gotPostcodeFromPosition( results ) {
-              console.log( results.result[0] );
               // postcode is in result.postcode
+              vm.location = {
+                "lat":results.result[0].latitude,
+                "lon": results.result[0].longitude
+              };
               vm.maybeSetPostcodeToHere( results.result[0].postcode );
             },
             function errorPostcodeFromPosition( error ) {

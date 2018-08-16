@@ -13,6 +13,7 @@
     'speciesSrvc',
     'sightingsSrvc',
     '$state',
+    '$stateParams',
     // from state.resolve
     'location',
     'postcode'
@@ -26,11 +27,12 @@
     speciesSrvc,
     sightingsSrvc,
     $state,
+    $stateParams,
     location,
     postcode
   ) {
 
-    console.log("searchCtrl: location, postcode - ",location,postcode);
+    console.log("\n\n•• searchCtrl: location, postcode - ",location,postcode);
 
     var vm = angular.extend(this, {
     });
@@ -40,37 +42,7 @@
     }, 100);
     $scope.$on('$destroy', vm.hardwareBackButton);
 
-    //-- TEST
-    // find a species
-/*    speciesSrvc.getSuggestedSpeciesNames( "rabbit" ).then(
-      function gotRabbits( speciesNames ) {
-        console.log(" found that wabbit", speciesNames );  
-      },
-      function failedGotRabbits( error ) {
-        console.log(" that wascally wabbit", error );
-      }
-    );
-*/
-/*    speciesSrvc.registerSpecies( "Lord Sitar" ).then(
-      function registeredSpecies( data ){
-        console.log( "registered species ", data );
-      },
-      function failedRegisteredSpecies( error ) {
-        console.log(" failed to register a species ", error);
-      }
-    );
-*/
-/*
-    speciesSrvc.getRegisteredSpecies("test").then(
-      function gotRegisteredSpecies( data ) {
-        console.log("queried for species 'test':", data );
-      },
-      function failedGetRegisteredSpecies( error ) {
-        console.log(" failed to get species 'test': ", error );
-      }
-    );
-*/
-    sightingsSrvc.registerSighting( "W1T2PR", {lat:1,lon:-0.2}, "2bbd8080-9636-11e8-96a2-632bdefa9a39" ).then(
+/*    sightingsSrvc.registerSighting( "W1T2PR", {lat:1,lon:-0.2}, "2bbd8080-9636-11e8-96a2-632bdefa9a39" ).then(
       function registerSightingsSuccess( data ) {
         console.log("search.controller.js:registerSightingsSuccess", data );
       },
@@ -87,12 +59,12 @@
         console.log( error );
       }
     );
-
+*/
     //Controller below
-    var createMap = function( position ) {
+    var createMap = function( mapPosition ) {
       //var latlng = L.latLng(53.471528, -2.241224);
-      console.log("createMap: position = ",position);
-      var latlng = L.latLng( position.latitude, position.longitude );
+      console.log("createMap: position = ",mapPosition);
+      var latlng = L.latLng( mapPosition.latitude, mapPosition.longitude );
 
       var mymap = L.map('mymap', {center: latlng, zoom: 16});
 
@@ -105,6 +77,7 @@
 
       return mymap;
     };
+
     var removeMarker = function(map, marker){
       map.removeLayer(marker);
     };
@@ -117,16 +90,14 @@
     var mymap = createMap( location );
     var clusterMarkers = L.markerClusterGroup();
 
-    //vm.postcode = M1 5GD";
     if( angular.isObject( postcode ) === true ) {
       vm.postcode = postcode[ 0 ].postcode;
     } else {
       vm.postcode = "W1T 2PR"; // central london tells us we have the wrong location
       // TRIGGER EXCEPTION / ERROR
     }
-
-    vm.centerMap = function centerMap(){
-        createMap(location);
+    vm.centerMap = function centerMap( location ){
+        createMap( location );
     };
 
     vm.refreshMap = function(postcode) {
