@@ -14,7 +14,8 @@
     'speciesSrvc',
     'sightingsSrvc',
     '$state',
-    '$ionicSideMenuDelegate'
+    '$ionicSideMenuDelegate',
+    'toaster'
   ];
 
   function homeCtrl(
@@ -26,7 +27,8 @@
     speciesSrvc,
     sightingsSrvc,
     $state,
-    $ionicSideMenuDelegate
+    $ionicSideMenuDelegate,
+    toaster
   ) {
     var vm = angular.extend(this, {
 
@@ -128,19 +130,35 @@
                                           confirmedLivingThing.id ).then(
                                             function getSightingsOk( payload ) {
                                               // @TODO
-                                            },
+                                              toaster.pop('success', "Sighting Logged", 'Your sighting of a <b>'+vm.species+'</b> was successful.',5000, 'trustedHtml', function(toaster) {
+                                                alert("click!");
+                                                return true;
+                                              } );                                            },
                                             function getSightingsError( error ) {
                                               // @TODO
+                                              toaster.pop('error', "Error: Logging Error", 'There was a problem finding similar species recordings; please check <ul><li>You have provided all required information</li><li>You are connected to the internet</li><li>You are not stuck in a captive portal page</li></ul>',0, 'trustedHtml', function(toaster) {
+                                                alert("click!");
+                                                return true;
+                                              } );
+
                                             }
                                           );
             },
             function registeredSpeciesOkButPostedSightingFail(error){ // 4
-            }
+              toaster.pop('error', "Error: Logging Error", 'There was a problem uploading your sighting; please check <ul><li>You have provided all required information</li><li>You are connected to the internet</li><li>You are not stuck in a captive portal page</li></ul>',0, 'trustedHtml', function(toaster) {
+                alert("click!");
+                return true;
+              } );
+           }
           );
         },
         function registeredSpeciesFail( error ) {
           console.log("registeredSpeciesFail: ",error);
-        }
+          toaster.pop('error', "Error: Logging Error", 'There was a problem uploading your logging; please check <ul><li>You have provided all required information</li><li>You are connected to the internet</li><li>You are not stuck in a captive portal page</li></ul>',0, 'trustedHtml', function(toaster) {
+            alert("click!");
+            return true;
+          } );
+       }
       );
     };
 
@@ -170,6 +188,11 @@
           }
         ).catch(function(e){
           console.log("EXCEPTION",e);
+          toaster.pop('error', "Error: Postcode Error", 'There was a problem accesing the Postcodes API; please check your intenet connection',0, 'trustedHtml', function(toaster) {
+            alert("click!");
+            return true;
+          } );
+
           return[];
         });
       return defer.promise;
@@ -226,11 +249,24 @@
           );
         },
         function errorBrowserLocation( error ){
-          alert("errorBrowserLocation:",error);
+          // @TODO this is the user rejecting browser access
+          toaster.pop({
+            type: 'error',
+            title: "Error: No Location Access",
+            body: 'Please grant access to your location in this browser window before trying again.',
+            bodyOutputType: 'trustedHtml',
+            tapToDismiss: false,
+            showCloseButton: true,
+            timeout: 0,
+            onHideCallback: function (toast) {
+              //alert("click!");
+              vm.handleIsMyLocation(); // try again!
+              return true;
+            }
+          } );
         }
       );
     };
-
 
     this.$onInit = function onInit() {
       vm.initialiseView();

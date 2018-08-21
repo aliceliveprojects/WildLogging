@@ -3,7 +3,9 @@
 
 	angular
 		.module('app.homeState', [
-			'ionic'
+			'ionic',
+      'toaster',
+      'ngAnimate'
 		])
 		.config(function($stateProvider) {
 			$stateProvider
