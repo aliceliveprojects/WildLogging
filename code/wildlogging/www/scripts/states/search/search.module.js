@@ -17,8 +17,16 @@
           },
           resolve: {
             location: ['$stateParams','locationsSrvc', function( $stateParams, locationsSrvc )  {
-              console.log("HELLO", $stateParams);
-              return locationsSrvc.getLocation( $stateParams.postcode );
+              console.log("!!!!", $stateParams);
+              return locationsSrvc.getLocation( $stateParams.postcode ).then(
+                function gotOkay( location ) {
+                  console.log("________",location);
+                  return location.result
+                },
+                function fail( err ) {
+                  alert(err);
+                }
+              );
             }],
             postcode: ['$stateParams','locationsSrvc', function( $stateParams, locationsSrvc )  {
               return;

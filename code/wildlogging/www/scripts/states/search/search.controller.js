@@ -64,7 +64,7 @@
     var createMap = function( mapPosition ) {
       //var latlng = L.latLng(53.471528, -2.241224);
       console.log("createMap: position = ",mapPosition);
-      var latlng = L.latLng( mapPosition.latitude, mapPosition.longitude );
+      var latlng =[ mapPosition.latitude, mapPosition.longitude ];
 
       var mymap = L.map('mymap', {center: latlng, zoom: 16});
 
@@ -87,6 +87,9 @@
     };
 
     vm.busy = false;
+
+    console.log("CONTROLLER: location, postcode",location,postcode);
+
     var mymap = createMap( location );
     var clusterMarkers = L.markerClusterGroup();
 
