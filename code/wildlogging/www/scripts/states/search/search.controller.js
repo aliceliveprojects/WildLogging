@@ -50,10 +50,11 @@
         console.log("search.controller.js:registerSightingsError", error );
       }
     );
-
-    sightingsSrvc.getSightings(  ).then(
+*/
+/*    sightingsSrvc.getSightings(  ).then(
       function gotSightings( data ) {
         console.log( data );
+        return data;
       },
       function failedGetSightings( error ) {
         console.log( error );
@@ -62,8 +63,6 @@
 */
     //Controller below
     var createMap = function( mapPosition ) {
-      //var latlng = L.latLng(53.471528, -2.241224);
-      console.log("createMap: position = ",mapPosition);
       var latlng =[ mapPosition.latitude, mapPosition.longitude ];
 
       var mymap = L.map('mymap', {center: latlng, zoom: 16});
@@ -86,27 +85,46 @@
       clusterMarkers = L.markerClusterGroup(); //re-new clusters 
     };
 
-    vm.busy = false;
+    
 
-    console.log("CONTROLLER: location, postcode",location,postcode);
 
-    var mymap = createMap( location );
-    var clusterMarkers = L.markerClusterGroup();
 
-    if( angular.isObject( postcode ) === true ) {
-      vm.postcode = postcode[ 0 ].postcode;
-    } else {
-      vm.postcode = "W1T 2PR"; // central london tells us we have the wrong location
-      // TRIGGER EXCEPTION / ERROR
-    }
     vm.centerMap = function centerMap( location ){
         createMap( location );
     };
 
-    vm.refreshMap = function(postcode) {
+    vm.refreshMap = function( postcode ) {
+
+      console.log("adding markers! 1 ");
+
       vm.busy = true;
       removeAllMarkers();
 
+      sightingsSrvc.getSightings( postcode ).then(
+        function gotSightings(result){
+          console.log("result from getsightings:", result );
+          // add them to the map
+          //          addResultsToMap(result.data);
+
+          result.data.forEach(function(e,index){
+            var marker = L.marker(new L.LatLng(e.lat, e.lon));
+
+            marker.bindPopup("<pre>" + JSON.stringify(e) + "</pre>");
+
+            clusterMarkers.addLayer(marker);
+          });
+          mymap.addLayer(clusterMarkers);
+          vm.busy = false;
+        },
+        function bah(err) {
+          console.log("error from getsightings:", err);
+        }
+      );
+    };
+
+//////
+
+/*
       postcode = postcode.replace(/\s+/g, ''); //remove spaces
 
       locationsSrvc.getMarkers(postcode)
@@ -122,12 +140,33 @@
         });
 
     };
+*/
+
     vm.clearMap = function(){
       removeAllMarkers();
     };
     vm.goHome = function() {
       $state.go("home");
     };
-  }
 
+    vm.busy = false;
+
+    console.log("CONTROLLER: location, postcode",location,postcode);
+
+    var mymap = createMap( location );
+    var clusterMarkers = L.markerClusterGroup();
+
+    // find what's there
+    if( location.postcode ) {
+      console.log("refresingMap! ... ");
+      vm.refreshMap( location.postcode );
+    }
+
+    if( angular.isObject( postcode ) === true ) {
+      vm.postcode = postcode[ 0 ].postcode;
+    } else {
+      vm.postcode = "W1T 2PR"; // central london tells us we have the wrong location
+      // TRIGGER EXCEPTION / ERROR
+    }
+  }
 })();

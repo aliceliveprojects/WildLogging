@@ -17,10 +17,8 @@
           },
           resolve: {
             location: ['$stateParams','locationsSrvc', function( $stateParams, locationsSrvc )  {
-              console.log("!!!!", $stateParams);
               return locationsSrvc.getLocation( $stateParams.postcode ).then(
                 function gotOkay( location ) {
-                  console.log("________",location);
                   return location.result
                 },
                 function fail( err ) {
