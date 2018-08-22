@@ -7,6 +7,7 @@
 
   searchCtrl.$inject = [
     '$ionicPlatform',
+    '$q',
     '$scope',
     '$timeout',
     'locationsSrvc',
@@ -14,6 +15,7 @@
     'sightingsSrvc',
     '$state',
     '$stateParams',
+    'toaster',
     // from state.resolve
     'location',
     'postcode'
@@ -21,6 +23,7 @@
 
   function searchCtrl(
     $ionicPlatform,
+    $q,
     $scope,
     $timeout,
     locationsSrvc,
@@ -28,6 +31,7 @@
     sightingsSrvc,
     $state,
     $stateParams,
+    toaster,
     location,
     postcode
   ) {
@@ -42,30 +46,21 @@
     }, 100);
     $scope.$on('$destroy', vm.hardwareBackButton);
 
-/*    sightingsSrvc.registerSighting( "W1T2PR", {lat:1,lon:-0.2}, "2bbd8080-9636-11e8-96a2-632bdefa9a39" ).then(
-      function registerSightingsSuccess( data ) {
-        console.log("search.controller.js:registerSightingsSuccess", data );
-      },
-      function registerSightingsError( error ) {
-        console.log("search.controller.js:registerSightingsError", error );
-      }
-    );
-*/
-/*    sightingsSrvc.getSightings(  ).then(
-      function gotSightings( data ) {
-        console.log( data );
-        return data;
-      },
-      function failedGetSightings( error ) {
-        console.log( error );
-      }
-    );
-*/
+    var startingZoom = 16;
+    var currentMapZoom = startingZoom;
+    var clusterMarkers = L.markerClusterGroup();
+
     //Controller below
     var createMap = function( mapPosition ) {
       var latlng =[ mapPosition.latitude, mapPosition.longitude ];
 
-      var mymap = L.map('mymap', {center: latlng, zoom: 16});
+      var mymap = L.map('mymap', { center: latlng,
+                                   zoom: startingZoom, minZoom: 1,  maxZoom: 18,
+                                   zoomControl: true } );
+
+//      L.control.zoom({
+//        position:'topright'
+//      }).addTo('mymap');
 
       L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
         attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
@@ -73,6 +68,15 @@
         id: 'mapbox.streets',
         accessToken: 'pk.eyJ1IjoiYWxpY2VkaWdpdGFsbGFicyIsImEiOiJjamF3YnA1a3UwbWliMnZta3B5b3NpbDBzIn0.39_7KL6gzUbNJEsbeYkpVg'
       }).addTo(mymap);
+
+
+
+      clusterMarkers = L.markerClusterGroup();
+      mymap.addLayer(clusterMarkers);
+
+      // events
+      mymap.on('resize moveend', handleMapMoveEvent );
+      mymap.on('zoomlevelschange zoomend', handleMapZoomEvent );
 
       return mymap;
     };
@@ -85,62 +89,127 @@
       clusterMarkers = L.markerClusterGroup(); //re-new clusters 
     };
 
-    
-
-
-
     vm.centerMap = function centerMap( location ){
         createMap( location );
     };
 
     vm.refreshMap = function( postcode ) {
-
-      console.log("adding markers! 1 ");
-
+//      console.log("adding markers! 1 ");
       vm.busy = true;
       removeAllMarkers();
 
+      getSightingsForPostcode( postcode );
+    };
+
+    function getSightingsForPostcode( postcode ) {
+      console.log( "getSightingsForPostcode " + postcode );
       sightingsSrvc.getSightings( postcode ).then(
-        function gotSightings(result){
-          console.log("result from getsightings:", result );
-          // add them to the map
-          //          addResultsToMap(result.data);
-
-          result.data.forEach(function(e,index){
-            var marker = L.marker(new L.LatLng(e.lat, e.lon));
-
-            marker.bindPopup("<pre>" + JSON.stringify(e) + "</pre>");
-
-            clusterMarkers.addLayer(marker);
-          });
-          mymap.addLayer(clusterMarkers);
-          vm.busy = false;
+        function gotSightingsForPostcodeOkay( data ) {
+          gotSightingsForPostcode( data );
         },
-        function bah(err) {
+        function getSightingsForPostcodeError(err) {
           console.log("error from getsightings:", err);
         }
+      ).then( function() {
+          vm.busy = false;
+        }
       );
-    };
+    }
+
+    function gotSightingsForPostcode(result){
+      console.log("result from getsightings:", result );
+      result.data.forEach(function(e,index){
+        var marker = L.marker(new L.LatLng(e.lat, e.lon));
+        // turn the thing-ID into a string
+        //console.log(e);
+        speciesSrvc.getSpeciesFromId(e.thing).then(
+          function turnedIdIntoASpecies( payload ){
+            console.log("turnedIdIntoASpecies", payload.data.name);
+            marker.bindPopup( payload.data.name );
+          },
+          function errorGettingSpeciesFromID( error ) {
+            console.log("errorGettingSpeciesFromID, ", error);
+            marker.bindPopup( e );
+          }
+        );
+        clusterMarkers.addLayer( marker );
+        mymap.addLayer( clusterMarkers );
+      });
+      //
+    }
+
+    function handleMapZoomEvent() {
+      if (mymap.getZoom()<currentMapZoom) {
+        getCenterAndRadius();
+      }
+      currentMapZoom = mymap.getZoom();
+    }
+
+    function handleMapMoveEvent() {
+      getCenterAndRadius();
+    }
+
+    function getCenterAndRadius() {
+      var centerLatLong = mymap.getCenter();
+      var mapBounds = mymap.getBounds();
+      var distance = mymap.distance(mapBounds._northEast, mapBounds._southWest );
+
+      // zap the markers
+      removeAllMarkers();
+
+      // get the postcodes in this area
+      locationsSrvc.locationToPostcode({latitude:centerLatLong.lat, longitude:centerLatLong.lng}, distance).then(
+        function gotPostcodeSet( data ){
+          var postcodes = [];
+          if ( data.result !== null ) {
+            postcodes = data.result.map( function(item, index){
+              console.log(item);
+              return item.postcode;
+            },[]);
+          }
+          console.log("postcodes here are:", postcodes);
+          // get data for postcodes
+          var sightings = [];
+          for(var i in postcodes) {
+            console.log(" queueing up for "+postcodes[i]);
+            sightings.push( sightingsSrvc.getSightings( postcodes[i] )
+                            .then(
+                              function gotBulkSightings(result){
+                                gotSightingsForPostcode(result);
+                              },
+                              function gotBulkSightingsError(error){
+                                console.log("problem getting bulk sightings",error);
+                              }
+                            )
+                          );
+          }
+          $q.all(sightings).then(
+            function( data ) {
+              console.log("got em all!");
+            },
+            function( error ) {
+              console.log("bollocks, "+error);
+            }
+          ).then(
+            function(){
+              vm.busy = false;
+            }
+          );
+        },
+        function failedPostcodeSet( error) {
+          console.log( "error getting postcodes! ");
+          // @TODO
+          toaster.pop('warning', "Oops: Postcode Error", 'There was a a problem retrieving postcodes; please check <ul><li>You are connected to the internet</li><li>You are not stuck in a captive portal page</li></ul>',0, 'trustedHtml', function(toaster) {
+            alert("click!");
+            return true;
+          } );
+
+        }
+      );
+    }
 
 //////
 
-/*
-      postcode = postcode.replace(/\s+/g, ''); //remove spaces
-
-      locationsSrvc.getMarkers(postcode)
-        .then(function(markersList){
-          markersList.forEach(function(e,index){
-
-            var marker = L.marker(new L.LatLng(e.location.lat, e.location.long));
-            clusterMarkers.addLayer(marker);
-
-          });
-          mymap.addLayer(clusterMarkers)
-          vm.busy = false;
-        });
-
-    };
-*/
 
     vm.clearMap = function(){
       removeAllMarkers();
@@ -151,10 +220,9 @@
 
     vm.busy = false;
 
-    console.log("CONTROLLER: location, postcode",location,postcode);
-
     var mymap = createMap( location );
     var clusterMarkers = L.markerClusterGroup();
+    mymap.addLayer(clusterMarkers);
 
     // find what's there
     if( location.postcode ) {

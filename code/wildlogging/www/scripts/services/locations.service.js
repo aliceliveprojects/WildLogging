@@ -126,7 +126,7 @@
 
     /////
 
-    service.getMarkers = function(postcode){
+/*    service.getMarkers = function(postcode){
       var deferred = $q.defer();
 
       $timeout(function(){
@@ -193,6 +193,8 @@
 
       return deferred.promise;
     };
+
+*/
     return service;
   }
 })();

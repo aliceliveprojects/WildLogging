@@ -8,10 +8,14 @@
     .module('app.api', [ 'restlet.sdk' ])
     .factory('speciesSrvc', speciesSrvc)
     .factory('sightingsSrvc', sightingsSrvc)
-  //.factory('locationsSrvc', locationsSrvc)
   ;
 
+  //
+  //
   // speciesSrvc
+  //
+  //
+
   speciesSrvc.$inject = [
     '$ionicPlatform',
     '$q',
@@ -38,9 +42,7 @@
 
     service.getSuggestedSpeciesNames = function getSuggestedSpeciesNames( searchTerms ) {
       var defer = $q.defer();
-
       var requestUrl = "";
-
       var cleanedSearchTerms = searchTerms.replace(/\W/g,'') // regex out all non alphanumeric characters
 
       if( cleanedSearchTerms.length>0 ) {
@@ -78,6 +80,10 @@
       return($http({method:"GET",url:endpointUri}));
     };
 
+    service.getSpeciesFromId = function getSpeciesFromId( idString ) {
+      var endpointUri = service.baseRestletURL + "things/" + idString;
+      return($http({method:"GET",url:endpointUri}));
+    }
 
     // inserts a species based on name. Should not create duplicate ites
     service.registerSpecies = function registerSpecies( speciesName ) {
@@ -111,11 +117,15 @@
         )
       );
     };
-
     return service;
   }
 
+  //
+  //
   // sightingsSrvc
+  //
+  //
+
   sightingsSrvc.$inject = [
     '$ionicPlatform',
     '$q',

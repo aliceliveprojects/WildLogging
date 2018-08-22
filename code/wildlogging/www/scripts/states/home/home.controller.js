@@ -86,7 +86,7 @@
 
     vm.handleSearchIt = function handleSearchIt() {
       // this is 'search it'
-      window.alert("Search It\npostcode: "+vm.postcode+"\nspecies:"+vm.species);
+      //window.alert("Search It\npostcode: "+vm.postcode+"\nspecies:"+vm.species);
       //vm.goSearch( vm.postcode );
       if( vm.postcode ) {
         $state.go('searchpostcode',{ "postcode": vm.postcode });
@@ -94,7 +94,7 @@
     };
 
     vm.handleLogIt = function handleLogIt() {
-      window.alert("Log It\npostcode: "+vm.postcode+"\nspecies:"+vm.species);
+      //window.alert("Log It\npostcode: "+vm.postcode+"\nspecies:"+vm.species);
       // has to perform https://trello.com/c/QAvEzIPT/57-logging-preparation-process
       // 1. prep the living thing
       // 2. invoke logging process
@@ -131,13 +131,12 @@
                                             function getSightingsOk( payload ) {
                                               // @TODO
                                               toaster.pop('success', "Sighting Logged", 'Your sighting of a <b>'+vm.species+'</b> was successful.',5000, 'trustedHtml', function(toaster) {
-                                                alert("click!");
+                                                //alert("click!");
                                                 return true;
                                               } );                                            },
                                             function getSightingsError( error ) {
                                               // @TODO
                                               toaster.pop('error', "Error: Logging Error", 'There was a problem finding similar species recordings; please check <ul><li>You have provided all required information</li><li>You are connected to the internet</li><li>You are not stuck in a captive portal page</li></ul>',0, 'trustedHtml', function(toaster) {
-                                                alert("click!");
                                                 return true;
                                               } );
 
@@ -146,7 +145,7 @@
             },
             function registeredSpeciesOkButPostedSightingFail(error){ // 4
               toaster.pop('error', "Error: Logging Error", 'There was a problem uploading your sighting; please check <ul><li>You have provided all required information</li><li>You are connected to the internet</li><li>You are not stuck in a captive portal page</li></ul>',0, 'trustedHtml', function(toaster) {
-                alert("click!");
+                //alert("click!");
                 return true;
               } );
            }
@@ -155,7 +154,7 @@
         function registeredSpeciesFail( error ) {
           console.log("registeredSpeciesFail: ",error);
           toaster.pop('error', "Error: Logging Error", 'There was a problem uploading your logging; please check <ul><li>You have provided all required information</li><li>You are connected to the internet</li><li>You are not stuck in a captive portal page</li></ul>',0, 'trustedHtml', function(toaster) {
-            alert("click!");
+            //alert("click!");
             return true;
           } );
        }
@@ -189,7 +188,7 @@
         ).catch(function(e){
           console.log("EXCEPTION",e);
           toaster.pop('error', "Error: Postcode Error", 'There was a problem accesing the Postcodes API; please check your intenet connection',0, 'trustedHtml', function(toaster) {
-            alert("click!");
+            //alert("click!");
             return true;
           } );
 
