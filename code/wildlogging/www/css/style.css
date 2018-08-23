@@ -1,5 +1,33 @@
 /* Empty. Add your own CSS if you like */
 
+div#date-selectors {
+  z-index:5;
+  float:left;
+  width:100%;
+  height:auto;
+}
+div#date-selectors>div.date-block {
+  top:0;
+  width:50%;
+  padding-right: 10px;
+  display: inline-block;
+  float:left;
+}
+div#date-selectors>div.date-block.to {
+  padding-right: 0px;
+}
+div#date-selectors>div.date-block>label {
+  margin-right: 1em;
+  float: left;
+  display: inline;
+  margin-top:.25em;
+}
+div#date-selectors>div.date-block>p {
+}
+div.date-block>span.input-group>input.form-control {
+  padding-left: .5em;
+  padding-right: .5em;
+}
 ul.dropdown-menu {
   /* make the drop-down list scrollable and overflowable! */
   height:50% !important;

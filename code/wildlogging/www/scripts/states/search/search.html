@@ -9,9 +9,57 @@
         id="mymap"
         style="height: 100%;">
       </div>
+
     </ion-content>
 
     <ion-footer-bar class="bar-dark">
-  </ion-footer-bar>
+      <div
+        id="date-selectors"
+      >
+        <div class="date-block from">
+        <label for="fromDate">from</label>
+        <span class="input-group">
+          <input type="date" class="form-control"
+            name="fromDate"
+            uib-datepicker-popup="{{format}}"
+            datepicker-append-to-body="true"
+            show-button-bar="false"
+            popup-placement="auto top-right"
+            ng-model="vm.fromDate"
+            is-open="vm.fromDateOpened"
+            close-on-date-selection="true"
+            datepicker-options="dateOptions"
+            ng-required="false"
+            close-text="Close"
+            alt-input-formats="altInputFormats" />
+          <span class="input-group-btn">
+            <button type="button" class="btn btn-default" ng-click="vm.handleFromDateOpen()"><i class="glyphicon glyphicon-calendar"></i></button>
+          </span>
+        </span>
+        </div>
+        <div class="date-block to">
+        <label for="toDate">to</label>
+        <span class="input-group">
+          <input type="date" class="form-control"
+            name="toDate"
+            uib-datepicker-popup="{{format}}"
+            datepicker-append-to-body="true"
+            show-button-bar="false"
+            popup-placement="auto top-right"
+            ng-model="vm.toDate"
+            is-open="vm.toDateOpened"
+            close-on-date-selection="true"
+            datepicker-options="dateOptions"
+            ng-required="false"
+            close-text="Close"
+            alt-input-formats="altInputFormats" />
+          <span class="input-group-btn">
+            <button type="button" class="btn btn-default" ng-click="vm.handleToDateOpen()"><i class="glyphicon glyphicon-calendar"></i></button>
+          </span>
+        </span>
+        </div>
+      </div>
+
+    </ion-footer-bar>
 </ion-view>
 

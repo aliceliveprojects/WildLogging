@@ -83,7 +83,7 @@
     service.getSpeciesFromId = function getSpeciesFromId( idString ) {
       var endpointUri = service.baseRestletURL + "things/" + idString;
       return($http({method:"GET",url:endpointUri}));
-    }
+    };
 
     // inserts a species based on name. Should not create duplicate ites
     service.registerSpecies = function registerSpecies( speciesName ) {

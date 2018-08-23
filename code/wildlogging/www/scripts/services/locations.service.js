@@ -60,7 +60,7 @@
         if( ( coords.latitude ) && ( coords.longitude ) ) {
           requestUrl = "https://api.postcodes.io/postcodes?lon="+coords.longitude+"&lat="+coords.latitude;
         }
-        if( ( angular.isDefined(radius)===true ) && ( Number.isInteger(radius)===true ) ) {
+        if( ( angular.isDefined(radius)===true ) && ( Number.isInteger(radius)===true ) ){
           requestUrl = requestUrl + "&radius=" + radius;
         }
         if( ( angular.isDefined(limit)===true ) && ( Number.isInteger(limit)===true ) ) {
@@ -80,7 +80,6 @@
       };
       throw new Error( service.BAD_LOCATION_OBJECT, coords );
     };
-
 
     service.getPostcodesFromPartial = function getPostcodesFromPartial( partial ) {
       var defer = $q.defer();

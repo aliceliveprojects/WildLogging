@@ -50,6 +50,23 @@
     var currentMapZoom = startingZoom;
     var clusterMarkers = L.markerClusterGroup();
 
+    vm.fromDate = null;
+    vm.fromDateOpened = false;
+    vm.handleFromDateOpen = function handleFromDateOpen(){
+      console.log("click!");
+      vm.fromDateOpened = true;
+      vm.toDateOpened = false;
+    };
+
+    vm.toDate = null;
+    vm.toDateOpened = false;
+    vm.handleToDateOpen = function handleToDateOpen(){
+      console.log("click!");
+      vm.toDateOpened = true;
+      vm.fromDateOpened = false;
+    };
+
+
     //Controller below
     var createMap = function( mapPosition ) {
       var latlng =[ mapPosition.latitude, mapPosition.longitude ];
