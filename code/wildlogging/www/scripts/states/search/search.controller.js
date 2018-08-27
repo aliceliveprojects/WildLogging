@@ -66,6 +66,13 @@
       vm.fromDateOpened = false;
     };
 
+    vm.fromDateChange = function fromDateChange(e) {
+      vm.refreshMap( vm.postcode );
+    };
+
+    vm.toDateChange = function toDateChange(e) {
+      vm.refreshMap( vm.postcode );
+    };
 
     //Controller below
     var createMap = function( mapPosition ) {
@@ -91,6 +98,7 @@
       clusterMarkers = L.markerClusterGroup();
       mymap.addLayer(clusterMarkers);
 
+
       // events
       mymap.on('resize moveend', handleMapMoveEvent );
       mymap.on('zoomlevelschange zoomend', handleMapZoomEvent );
@@ -101,6 +109,7 @@
     var removeMarker = function(map, marker){
       map.removeLayer(marker);
     };
+
     var removeAllMarkers = function(){
       mymap.removeLayer(clusterMarkers);
       clusterMarkers = L.markerClusterGroup(); //re-new clusters 
@@ -111,6 +120,9 @@
     };
 
     vm.refreshMap = function( postcode ) {
+      console.log("^^^ setting vm.postcode to "+postcode);
+      vm.postcode = postcode;
+//      vm.postcode = postcode; 
 //      console.log("adding markers! 1 ");
       vm.busy = true;
       removeAllMarkers();
@@ -119,8 +131,10 @@
     };
 
     function getSightingsForPostcode( postcode ) {
-      console.log( "getSightingsForPostcode " + postcode );
-      sightingsSrvc.getSightings( postcode ).then(
+      var fromEpoch = vm.fromDate ? vm.fromDate.getTime() : undefined;
+      var toEpoch = vm.toDate ? vm.toDate.getTime() : undefined;
+      console.log( "getSightingsForPostcode " + postcode, fromEpoch, toEpoch );
+      sightingsSrvc.getSightings( postcode, fromEpoch, toEpoch ).then(
         function gotSightingsForPostcodeOkay( data ) {
           gotSightingsForPostcode( data );
         },
@@ -136,23 +150,52 @@
     function gotSightingsForPostcode(result){
       console.log("result from getsightings:", result );
       result.data.forEach(function(e,index){
-        var marker = L.marker(new L.LatLng(e.lat, e.lon));
+        var marker = undefined;
         // turn the thing-ID into a string
-        //console.log(e);
         speciesSrvc.getSpeciesFromId(e.thing).then(
           function turnedIdIntoASpecies( payload ){
+            marker = L.marker(new L.LatLng(e.lat, e.lon),{
+              species: payload.data.name,
+              date: new Date(e.date).toLocaleDateString(),
+              time: new Date(e.date).toLocaleTimeString(),
+              location: e.postcode
+            });
             console.log("turnedIdIntoASpecies", payload.data.name);
-            marker.bindPopup( payload.data.name );
+            marker.bindPopup( payload.data.name+"<br>"+new Date(e.date).toLocaleString()+"<br>"+e.postcode );
+            clusterMarkers.addLayer( marker );
           },
           function errorGettingSpeciesFromID( error ) {
+            marker = L.marker(new L.LatLng(e.lat, e.lon),{
+              species: e.thing+"(problem with Species service)",
+              date: new Date(e.date).toLocaleDateString(),
+              time: new Date(e.date).toLocaleTimeString(),
+              location: e.postcode
+            });
             console.log("errorGettingSpeciesFromID, ", error);
             marker.bindPopup( e );
+            clusterMarkers.addLayer( marker );
           }
         );
-        clusterMarkers.addLayer( marker );
+
         mymap.addLayer( clusterMarkers );
       });
-      //
+      clusterMarkers.on('clustermouseover', function (a) {
+	      // a.layer is actually a cluster
+        var popup = L.popup()
+            .setLatLng(a.layer.getLatLng())
+            .setContent(
+              "<table class='species-cluster'><thead><tr><td class='first'>Species</td><td>Date</td><td>Time</td><td>Location</td></tr></thead><tbody>"+
+                (a.layer.getAllChildMarkers().reduce(function(flat,toFlatten){
+                  return( flat+"<tr>"+"<td class='name'>"+toFlatten.options.species+"</td>"+"<td>"+[ toFlatten.options.date, toFlatten.options.time, toFlatten.options.location].join("</td><td>")+"</td></tr>" );
+                },""))+
+                "</tbody></table>"
+            )
+            .openOn(mymap);
+      }).on('clustermouseout',function(c){
+        mymap.closePopup();
+      }).on('clusterclick',function(c){
+          mymap.closePopup();
+      });
     }
 
     function handleMapZoomEvent() {
@@ -185,6 +228,9 @@
             },[]);
           }
           console.log("postcodes here are:", postcodes);
+          if(postcodes.length>0) {
+            vm.postcode = postcodes[0];
+          }
           // get data for postcodes
           var sightings = [];
           for(var i in postcodes) {
@@ -205,7 +251,7 @@
               console.log("got em all!");
             },
             function( error ) {
-              console.log("bollocks, "+error);
+              console.log("oh heck, "+error);
             }
           ).then(
             function(){
@@ -247,11 +293,11 @@
       vm.refreshMap( location.postcode );
     }
 
-    if( angular.isObject( postcode ) === true ) {
-      vm.postcode = postcode[ 0 ].postcode;
+    if( angular.isDefined( location.postcode ) === true ) {
+      vm.postcode = location.postcode;
     } else {
-      vm.postcode = "W1T 2PR"; // central london tells us we have the wrong location
-      // TRIGGER EXCEPTION / ERROR
+      console.log("*** no postcode!!!", location, postcode);
+      //vm.postcode = "W1T 2PR"; // central london tells us we have the wrong location somehow
     }
   }
 })();

@@ -1,5 +1,40 @@
 /* Empty. Add your own CSS if you like */
 
+table.species-cluster {
+
+}
+table.species-cluster>thead>tr {
+  border-bottom: 1px solid black;
+  padding: 0 0 .5em 0;
+  font-weight: 900;
+  color: #555;
+}
+table.species-cluster>thead>tr>td {
+  padding-left: .25em;
+}
+table.species-cluster>thead>tr>td.first {
+  padding-left: 0;
+}
+table.species-cluster>tbody>tr {
+  margin-bottom:.15em;
+}
+table.species-cluster>tbody>tr:nth-child(even) {
+  background-color: #eee;
+}
+table.species-cluster>tbody>tr>td {
+  margin: 0 0 .5em 0;
+  color: #444;
+  padding-left:.5em;
+  white-space: nowrap;
+}
+table.species-cluster>tbody>tr>td.name {
+  font-weight: 700;
+  font-style: italic;
+  padding-left: 0;
+  color: black;
+  white-space: normal;
+}
+
 div#date-selectors {
   z-index:5;
   float:left;

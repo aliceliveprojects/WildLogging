@@ -21,6 +21,7 @@
         <span class="input-group">
           <input type="date" class="form-control"
             name="fromDate"
+            ng-change="vm.fromDateChange()"
             uib-datepicker-popup="{{format}}"
             datepicker-append-to-body="true"
             show-button-bar="false"
@@ -42,6 +43,7 @@
         <span class="input-group">
           <input type="date" class="form-control"
             name="toDate"
+            ng-change="vm.toDateChange()"
             uib-datepicker-popup="{{format}}"
             datepicker-append-to-body="true"
             show-button-bar="false"

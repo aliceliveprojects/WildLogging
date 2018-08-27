@@ -158,10 +158,10 @@
         parameters = addParameter( parameters, "postcode", sanitisePostcode( postcode ) );
       }
       if (angular.isDefined(dateFrom) ) {
-        parameters = addParameter( parameters, "dateFrom", dateFrom );
+        parameters = addParameter( parameters, "date>", dateFrom );
       }
       if (angular.isDefined(dateTo) ) {
-        parameters = addParameter( parameters, "dateTo", dateTo );
+        parameters = addParameter( parameters, "date<", dateTo );
       }
       if (angular.isDefined(thingsReference) ) {
         parameters = addParameter( parameters, "thing", thingsReference );
