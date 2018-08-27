@@ -86,8 +86,6 @@
 
     vm.handleSearchIt = function handleSearchIt() {
       // this is 'search it'
-      //window.alert("Search It\npostcode: "+vm.postcode+"\nspecies:"+vm.species);
-      //vm.goSearch( vm.postcode );
       if( vm.postcode ) {
         $state.go('searchpostcode',{ "postcode": vm.postcode });
       }

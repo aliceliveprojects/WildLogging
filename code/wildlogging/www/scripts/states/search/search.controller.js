@@ -50,6 +50,8 @@
     var currentMapZoom = startingZoom;
     var clusterMarkers = L.markerClusterGroup();
 
+    vm.mapData = []; // dirty hack to work around having to filter client-side; this should be better handled with a service to store and manage data
+
     vm.fromDate = null;
     vm.fromDateOpened = false;
     vm.handleFromDateOpen = function handleFromDateOpen(){
@@ -120,10 +122,7 @@
     };
 
     vm.refreshMap = function( postcode ) {
-      console.log("^^^ setting vm.postcode to "+postcode);
       vm.postcode = postcode;
-//      vm.postcode = postcode; 
-//      console.log("adding markers! 1 ");
       vm.busy = true;
       removeAllMarkers();
 

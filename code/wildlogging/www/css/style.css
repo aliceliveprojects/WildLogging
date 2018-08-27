@@ -1,5 +1,13 @@
 /* Empty. Add your own CSS if you like */
 
+input.form-control {
+  margin-right: 80px ;
+  width: inherit;
+  display: inline-block;
+}
+div.form-group>label {
+  display: block;
+}
 table.species-cluster {
 
 }
@@ -70,10 +78,12 @@ ul.dropdown-menu {
 }
 
 div.loading-spinner {
-  background-color: red;
-  width:20px;
-  height:20px;
+  width:24px;
+  height:24px;
   display:inline-block;
+  background-color: white;
+  padding: 2px;
+  border-radius: 4px;
 }
 div.loading-spinner>div.sk-fading-circle {
   width:20px !important;
@@ -81,7 +91,6 @@ div.loading-spinner>div.sk-fading-circle {
 }
 
 .sk-fading-circle {
-  margin: 100px auto;
   width: 40px;
   height: 40px;
   position: relative;
