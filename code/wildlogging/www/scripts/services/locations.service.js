@@ -111,7 +111,7 @@
       if( requestUrl !== "" ) {
         $http.get( requestUrl )
           .success(function ( data, status, headers, config ) {
-            console.log( "locationsSrvc.getLocation:", data );
+            //console.log( "locationsSrvc.getLocation:", data );
             defer.resolve( data )
           } )
           .error( function ( data, status, headers, config ) {

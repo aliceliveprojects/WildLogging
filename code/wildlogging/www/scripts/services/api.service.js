@@ -157,19 +157,19 @@
       if (angular.isDefined(postcode) ) {
         parameters = addParameter( parameters, "postcode", sanitisePostcode( postcode ) );
       }
-      if (angular.isDefined(dateFrom) ) {
+      /*if (angular.isDefined(dateFrom) ) {
         parameters = addParameter( parameters, "date>", dateFrom );
       }
       if (angular.isDefined(dateTo) ) {
         parameters = addParameter( parameters, "date<", dateTo );
-      }
+      }*/
       if (angular.isDefined(thingsReference) ) {
         parameters = addParameter( parameters, "thing", thingsReference );
       }
 
       var endpointUri = service.baseRestletURL + "events/?"+parameters;
 
-      console.log( "sightingsSrvc.getSightings: getting  "+endpointUri );
+      //console.log( "sightingsSrvc.getSightings: getting  "+endpointUri );
 
       return($http({method:"GET",url:endpointUri}));
     };
@@ -188,7 +188,7 @@
       if( angular.isDefined( thingsReference ) ) {
         event.thing = thingsReference;
       }
-      console.log( "sightingsSrvc.registerSighting registering ", event );
+      //console.log( "sightingsSrvc.registerSighting registering ", event );
       return theurbanwild.postEvents( event );
     };
 

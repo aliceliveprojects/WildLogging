@@ -1,5 +1,7 @@
 /* Empty. Add your own CSS if you like */
-
+div.home-page {
+  padding:4px;
+}
 input.form-control {
   margin-right: 80px ;
   width: inherit;

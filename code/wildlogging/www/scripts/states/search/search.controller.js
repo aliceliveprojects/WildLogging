@@ -36,7 +36,7 @@
     postcode
   ) {
 
-    console.log("\n\n•• searchCtrl: location, postcode - ",location,postcode);
+    //console.log("\n\n•• searchCtrl: location, postcode - ",location,postcode);
 
     var vm = angular.extend(this, {
     });
@@ -55,7 +55,6 @@
     vm.fromDate = null;
     vm.fromDateOpened = false;
     vm.handleFromDateOpen = function handleFromDateOpen(){
-      console.log("click!");
       vm.fromDateOpened = true;
       vm.toDateOpened = false;
     };
@@ -63,7 +62,6 @@
     vm.toDate = null;
     vm.toDateOpened = false;
     vm.handleToDateOpen = function handleToDateOpen(){
-      console.log("click!");
       vm.toDateOpened = true;
       vm.fromDateOpened = false;
     };
@@ -84,10 +82,6 @@
                                    zoom: startingZoom, minZoom: 1,  maxZoom: 18,
                                    zoomControl: true } );
 
-//      L.control.zoom({
-//        position:'topright'
-//      }).addTo('mymap');
-
       L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
         attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
         maxZoom: 18,
@@ -95,11 +89,8 @@
         accessToken: 'pk.eyJ1IjoiYWxpY2VkaWdpdGFsbGFicyIsImEiOiJjamF3YnA1a3UwbWliMnZta3B5b3NpbDBzIn0.39_7KL6gzUbNJEsbeYkpVg'
       }).addTo(mymap);
 
-
-
       clusterMarkers = L.markerClusterGroup();
       mymap.addLayer(clusterMarkers);
-
 
       // events
       mymap.on('resize moveend', handleMapMoveEvent );
@@ -124,7 +115,6 @@
     vm.refreshMap = function( postcode ) {
       vm.postcode = postcode;
       vm.busy = true;
-      removeAllMarkers();
 
       getSightingsForPostcode( postcode );
     };
@@ -132,13 +122,17 @@
     function getSightingsForPostcode( postcode ) {
       var fromEpoch = vm.fromDate ? vm.fromDate.getTime() : undefined;
       var toEpoch = vm.toDate ? vm.toDate.getTime() : undefined;
-      console.log( "getSightingsForPostcode " + postcode, fromEpoch, toEpoch );
-      sightingsSrvc.getSightings( postcode, fromEpoch, toEpoch ).then(
+      //console.log( "getSightingsForPostcode " + postcode, fromEpoch, toEpoch );
+      sightingsSrvc.getSightings( postcode ).then(
         function gotSightingsForPostcodeOkay( data ) {
-          gotSightingsForPostcode( data );
+          removeAllMarkers();
+          gotSightingsForPostcode( data, fromEpoch, toEpoch );
         },
         function getSightingsForPostcodeError(err) {
           console.log("error from getsightings:", err);
+          toaster.pop('error', "Error: Data Error", 'There was a problem accessing sightings.',0, 'trustedHtml', function(toaster) {
+            return(true);
+          } );
         }
       ).then( function() {
           vm.busy = false;
@@ -146,38 +140,55 @@
       );
     }
 
-    function gotSightingsForPostcode(result){
-      console.log("result from getsightings:", result );
-      result.data.forEach(function(e,index){
-        var marker = undefined;
-        // turn the thing-ID into a string
-        speciesSrvc.getSpeciesFromId(e.thing).then(
-          function turnedIdIntoASpecies( payload ){
-            marker = L.marker(new L.LatLng(e.lat, e.lon),{
-              species: payload.data.name,
-              date: new Date(e.date).toLocaleDateString(),
-              time: new Date(e.date).toLocaleTimeString(),
-              location: e.postcode
-            });
-            console.log("turnedIdIntoASpecies", payload.data.name);
-            marker.bindPopup( payload.data.name+"<br>"+new Date(e.date).toLocaleString()+"<br>"+e.postcode );
-            clusterMarkers.addLayer( marker );
-          },
-          function errorGettingSpeciesFromID( error ) {
-            marker = L.marker(new L.LatLng(e.lat, e.lon),{
-              species: e.thing+"(problem with Species service)",
-              date: new Date(e.date).toLocaleDateString(),
-              time: new Date(e.date).toLocaleTimeString(),
-              location: e.postcode
-            });
-            console.log("errorGettingSpeciesFromID, ", error);
-            marker.bindPopup( e );
-            clusterMarkers.addLayer( marker );
+    function gotSightingsForPostcode(result, fromEpoch, toEpoch){
+      //console.log("got sightings from postcode:", fromEpoch, toEpoch);
+      result.data
+        .filter(function(item,index){
+          //console.log(item);
+          if( ( isNaN( toEpoch ) && angular.isDefined( fromEpoch ) === false ) && ( isNaN( toEpoch ) && angular.isDefined( toEpoch ) === false ) ) {
+            //console.log("no dates!");
+            return true;
           }
-        );
-
-        mymap.addLayer( clusterMarkers );
-      });
+          var valid=true;
+          if( ( ( !isNaN( fromEpoch ) ) && ( angular.isDefined( fromEpoch ) === true ) ) && ( item.date < fromEpoch ) ) {
+            //console.log("fromEpoch and invalid");
+            valid = false;
+          }
+          if( ( ( !isNaN( toEpoch   ) ) && ( angular.isDefined( toEpoch   ) === true ) ) && ( item.date > toEpoch   ) ) {
+            //console.log("toEpoch and invalid");
+            valid = false;
+          }
+          return valid;
+        }, [] )
+        .forEach(function(e,index){
+          var marker;
+          // turn the thing-ID into a string
+          speciesSrvc.getSpeciesFromId(e.thing).then(
+            function turnedIdIntoASpecies( payload ){
+              marker = L.marker(new L.LatLng(e.lat, e.lon),{
+                species: payload.data.name,
+                date: new Date(e.date).toLocaleDateString(),
+                time: new Date(e.date).toLocaleTimeString(),
+                location: e.postcode
+              });
+              marker.bindPopup( payload.data.name+"<br>"+new Date(e.date).toLocaleString()+"<br>"+e.postcode );
+              clusterMarkers.addLayer( marker );
+            },
+            function errorGettingSpeciesFromID( error ) {
+              marker = L.marker(new L.LatLng(e.lat, e.lon),{
+                species: e.thing+"(problem with Species service)",
+                date: new Date(e.date).toLocaleDateString(),
+                time: new Date(e.date).toLocaleTimeString(),
+                location: e.postcode
+              });
+              console.log("errorGettingSpeciesFromID, ", error);
+              marker.bindPopup( e );
+              clusterMarkers.addLayer( marker );
+            }
+          );
+          mymap.addLayer( clusterMarkers );
+        }
+      );
       clusterMarkers.on('clustermouseover', function (a) {
 	      // a.layer is actually a cluster
         var popup = L.popup()
@@ -212,6 +223,8 @@
       var centerLatLong = mymap.getCenter();
       var mapBounds = mymap.getBounds();
       var distance = mymap.distance(mapBounds._northEast, mapBounds._southWest );
+      var fromEpoch = vm.fromDate ? vm.fromDate.getTime() : undefined;
+      var toEpoch = vm.toDate ? vm.toDate.getTime() : undefined;
 
       // zap the markers
       removeAllMarkers();
@@ -222,22 +235,22 @@
           var postcodes = [];
           if ( data.result !== null ) {
             postcodes = data.result.map( function(item, index){
-              console.log(item);
+              //console.log(item);
               return item.postcode;
             },[]);
           }
-          console.log("postcodes here are:", postcodes);
+          //console.log("postcodes here are:", postcodes);
           if(postcodes.length>0) {
             vm.postcode = postcodes[0];
           }
           // get data for postcodes
           var sightings = [];
           for(var i in postcodes) {
-            console.log(" queueing up for "+postcodes[i]);
+            //console.log(" queueing up for "+postcodes[i]);
             sightings.push( sightingsSrvc.getSightings( postcodes[i] )
                             .then(
                               function gotBulkSightings(result){
-                                gotSightingsForPostcode(result);
+                                gotSightingsForPostcode(result, fromEpoch, toEpoch );
                               },
                               function gotBulkSightingsError(error){
                                 console.log("problem getting bulk sightings",error);
@@ -247,10 +260,10 @@
           }
           $q.all(sightings).then(
             function( data ) {
-              console.log("got em all!");
+              //console.log("got em all!");
             },
             function( error ) {
-              console.log("oh heck, "+error);
+              //console.log("oh heck, "+error);
             }
           ).then(
             function(){
@@ -288,7 +301,7 @@
 
     // find what's there
     if( location.postcode ) {
-      console.log("refresingMap! ... ");
+      //console.log("refresingMap! ... ");
       vm.refreshMap( location.postcode );
     }
 
