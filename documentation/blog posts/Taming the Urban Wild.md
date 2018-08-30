@@ -4,7 +4,7 @@ A post-mortem of an implementation exercise
 
 ## There's only one way to ruin a good plan and that's to put it into practice.
 
-Over the last few weeks, I've gone in cold on a DigitalLabs-style project, documented and laid out on Trello. It was put designed quickly in December 2017 as an exemplar to show some of the most regular elements of the toolchain here, including
+Over the last few weeks, I've gone in cold on a DigitalLabs-style project, documented and laid out on Trello. It was ~~put~~ designed quickly in December 2017 as an exemplar to show some of the most regular elements of the toolchain here, including
 
 * Restlet
 * Angular
@@ -52,6 +52,8 @@ DigitalLabs uses Trello as a vast set of interconnected hypermedia, linking card
 
 TheUrbanWild was delivered as a fully-realised set of boards, which broke down the whole functionality and design into discrete nuggets. Whilst this is incredibly useful and one of the only ways to organise this with teams, I felt a high-level overview of what the system was trying to do was missing; I could see distinct *flows* and what parts of a system would need producing (and from what) to realise it, but I sometimes couldn't see the thinking behind the system as a *whole*. Whilst this became evident as the implementation progressed, it could have reduced a few missteps on the way there by providing greater clarity behind some of the design decisions, and why they were the way they were.
 
+There was a *User Stories* board on Trello, and a set of wireframes, but the conveying the understanding of the overarching aim of the project would have benefitted from *more* and *tighter coupling* of both (more on the wireframes below).
+
 ## The unknown unknowns
 
 Back in the old days, the world's most dangerous man was Donald Rumsfeld; what made him evil was deliberate behaviour, unlike modern  evil, which is permatanned-brownean motions of evil in an increasingly shrinking medium. While justifying sending future generations into a programme of mass slaughter at a distance for which he would never be held accountable, he did deliver one gem of wisdom: [that there are known knowns, known unknowns, but that the unknown unknowns were the true random factors involved in any programme](https://en.wikipedia.org/wiki/There_are_known_knowns), whether developing software or unleashing genocide on civilians. 
@@ -83,17 +85,17 @@ In implementing the Urban Wild, sometimes distinct parts of the used slightly di
  Latitude             |`.latitude` |`.latitude`    |`.lat`   |`.lat`
  Longitude            |`.longitude`|`.longitude`   |`.lng`   |`.long`
 
-Whilst not wildly different, this incurs a certain amount of cognitive overhead and occasional rename-and-retry cycles where there was a `.longitude` where a `.lng` was needed; it added *friction* to what could have been a seamless and intuitive series of data exchanges, causing double-checks to take place that would not have been necessary had the properties been identically named and taking the developer *out of the zone*. This inevitably happens when connecting systems developed independently over which there is no control. 
+Whilst not wildly different, this incurs a certain amount of cognitive overhead and occasional rename-and-retry cycles where there was a `.longitude` where a `.lng` was needed; it added *friction* to what could have been a seamless and intuitive series of data exchanges, causing double-checks to take place that would not have been necessary had the properties been identically named and taking the developer *out of the zone*. This inevitably happens when connecting systems developed independently, over which there is no control. 
 
 Some other naming variations took place, which caused me to have to stop and think from time to time whilst implementing the system; were *sightings* and *events* the same thing? (...they were). The most complex, however, was the data returned by ITIS; not because it was *inconsisent*, but because of how incredibly *comprehensive* it was. Analysing this data exposed many of the shortcomings in our assumptions around how straightforward getting useful results from this data source would be, and opened up the second order questions we didn't realise we needed to address in our species name suggestion service.
 
 ### Postcodes *seem* to provide a nice granular grid... don't they?
 
-Due to limitations in the queries that Heroku can operate (it looks a *little* like a DBMS-over-HTTP, but lacks comparison feature), a decision was made to quantise all location information to a postcode-based grid for storage purposes. This way, we could at least ask for all sightings in a postcode, (we could *not* ask for all sightings within an arbitrary geofenced region due to not having comparisons or geographic support in Restlet's API)
+Due to limitations in the queries that Restlet can operate (it looks a *little* like a DBMS-over-HTTP, but lacks comparison feature), a decision was made to quantise all location information to a postcode-based grid for storage purposes. This way, we could at least ask for all sightings in a postcode, (we could *not* ask for all sightings within an arbitrary geofenced region due to not having comparisons or geographic support in Restlet's API)
 
 [Postcodes.io](https://postcodes.io) provides a free tier of usage for roundtripping latitude/longitude locations to postcodes, and back again, which seemed to be an ideal way to manage this otherwise expensive transformation process. We could implement all our data storage and lookup using free, externally-provided services - at least at the levels of usage we'd anticipate for a MVP.
 
-The browser provides latitude/longitude information (if the user permits) and we convert this into a postcode when logging an item, ensuring the user is *in situ* when adding a sighting to the system. We also use this when initialising a view, turning the location into a postcode then querying the Heroku store for sightings at that location. All this works delightfully and cleanly, exactly as planned.
+The browser provides latitude/longitude information (if the user permits) and we convert this into a postcode when logging an item, ensuring the user is *in situ* when adding a sighting to the system. We also use this when initialising a view, turning the location into a postcode then querying the Restlet store for sightings at that location. All this works delightfully and cleanly, exactly as planned.
 
 The devil, as always, is in the details, hiding a world of complexity and presumptions into a few innocent words. "[When the map changes scale or pans, or when the date pickers are changed, a new data process is started, and the map re-populated](https://trello.com/c/0c2xkGvN)". Identifying the geographic centroid and extent of the map is straightforward and provided by the running [Leaflet](https://leafletjs.com) instance - turning this into a set of postcodes, however, is a little hairier, despite seeming to be a straightforward lookup task for the Postcodes.io API.
 
@@ -116,3 +118,5 @@ HTML5 and CSS3 are an astounding combination. There are some incredibly useful f
 Finally, wireframes. Our original planner produced a number of treatments in [Pencil](http://pencil.evolus.vn), which provided the best version of a high-level overview; my only real complaint with them was that there weren't nearly *enough* of them to make the range of usage scenarios explicit. Annotations are extremely important with explanatory wireframes, making it clear a button isn't clickable because of an application state (as opposed to that branch of wireframe treatment hadn't, or wouldn't, be handled!).
 
 Try the first iteration out at [Github Pages](https://theurbanwild.github.io/WildLogging/), view the boards at [Trello](https://trello.com/theurbanwild1), and see the code implementation at [github](https://github.com/TheUrbanWild/WildLogging).
+
+While we tried to establish a usage methodology that would make it impossible to enter profanity and fake records, there is nothing to prevent a user entering false positives in bad faith. The road to MVP is paved with good intentions.
