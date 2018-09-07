@@ -41,6 +41,8 @@
     var vm = angular.extend(this, {
     });
 
+    vm.busy = true;
+
     vm.hardwareBackButton = $ionicPlatform.registerBackButtonAction(function() {
         //called when hardware back button pressed
     }, 100);
@@ -105,7 +107,7 @@
 
     var removeAllMarkers = function(){
       mymap.removeLayer(clusterMarkers);
-      clusterMarkers = L.markerClusterGroup(); //re-new clusters 
+      clusterMarkers = L.markerClusterGroup(); //re-new clusters
     };
 
     vm.centerMap = function centerMap( location ){
@@ -209,9 +211,7 @@
     }
 
     function handleMapZoomEvent() {
-      if (mymap.getZoom()<currentMapZoom) {
-        getCenterAndRadius();
-      }
+      getCenterAndRadius();
       currentMapZoom = mymap.getZoom();
     }
 
@@ -230,6 +230,7 @@
       removeAllMarkers();
 
       // get the postcodes in this area
+      vm.busy=true;
       locationsSrvc.locationToPostcode({latitude:centerLatLong.lat, longitude:centerLatLong.lng}, distance).then(
         function gotPostcodeSet( data ){
           var postcodes = [];
