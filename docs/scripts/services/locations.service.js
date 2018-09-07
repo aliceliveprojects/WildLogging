@@ -52,8 +52,11 @@
     // radius: integer specifying radius (optional)
     // limit: maximum result count (optional)
     // after promise: returns a list of postcode objects
-    service.locationToPostcode = function locationToPostcode( coords, radius, limit ) {
+    service.locationToPostcode = function locationToPostcode( coords, requested_radius, requested_limit ) {
       var defer  = $q.defer();
+
+      var limit = Math.min(requested_limit, 99); // API sets maximum 99 as limit
+      var radius = Math.min(requested_radius, 1999); // API sets maximum radius of 1999
 
       var requestUrl = "";
       if( angular.isObject( coords ) === true  ) {
@@ -134,7 +137,7 @@
           [
             {
               postcode: "M15GD",
-              location: 
+              location:
               {
                 lat: 53.471528,
                 long: -2.241224
@@ -143,7 +146,7 @@
             },
             {
               postcode: "M15GD",
-              location: 
+              location:
               {
                 lat: 53.473528,
                 long: -2.243224
@@ -152,7 +155,7 @@
             },
             {
               postcode: "M15GD",
-              location: 
+              location:
               {
                 lat: 53.469528,
                 long: -2.243224
@@ -161,7 +164,7 @@
             },
             {
               postcode: "M15GD",
-              location: 
+              location:
               {
                 lat: 53.469525,
                 long: -2.243225
@@ -170,7 +173,7 @@
             },
             {
               postcode: "M15GD",
-              location: 
+              location:
               {
                 lat: 53.46952,
                 long: -2.24322
@@ -179,7 +182,7 @@
             },
             {
               postcode: "M15GD",
-              location: 
+              location:
               {
                 lat: 53.46,
                 long: -2.24

@@ -43,7 +43,7 @@
     service.getSuggestedSpeciesNames = function getSuggestedSpeciesNames( searchTerms ) {
       var defer = $q.defer();
       var requestUrl = "";
-      var cleanedSearchTerms = searchTerms.replace(/\W/g,'') // regex out all non alphanumeric characters
+      var cleanedSearchTerms = searchTerms.replace(/[^a-zA-Z0-9 :]/g, ''); // regex out all non alphanumeric characters
 
       if( cleanedSearchTerms.length>0 ) {
         requestUrl = "https://www.itis.gov/ITISWebService/jsonservice/searchForAnyMatch?jsonP=JSON_CALLBACK&srchKey=" + cleanedSearchTerms;
