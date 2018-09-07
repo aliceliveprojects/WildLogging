@@ -107,7 +107,7 @@
           function registerSpeciesButExists( data ) {
             if( data.data.length>0 ) {
               console.log("registerSpecies: Species already exists! ", speciesName, data );
-              return data.data;
+              return data.data.shift();
             } else {
               // not in the database
               return registerSpeciesDoesNotExist( {} );
