@@ -211,6 +211,9 @@
     }
 
     function handleMapZoomEvent() {
+      if (mymap.getZoom()<currentMapZoom) {
+        getCenterAndRadius();
+      }
       getCenterAndRadius();
       currentMapZoom = mymap.getZoom();
     }
