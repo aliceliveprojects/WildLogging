@@ -76,7 +76,7 @@
     };
 
     service.getRegisteredSpecies = function getRegisteredSpecies( speciesName ) {
-      var endpointUri = service.baseRestletURL + "things/?name="+speciesName;
+      var endpointUri = service.baseRestletURL + "things/?name="+encodeURIComponent( speciesName );
       return($http({method:"GET",url:endpointUri}));
     };
 
