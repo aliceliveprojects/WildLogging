@@ -1,0 +1,82 @@
+{
+	"info": {
+		"_postman_id": "b25c1629-09c2-44d2-a8a2-2084aa3a3b3e",
+		"name": "UrbanWild",
+		"description": "This collection will test the available functions of the UrbanWild Database API on Restlet. Not authentication is used.\n",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GET species",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "https://theurbanwild.restlet.net/v1/things/?$size=10&$page=1",
+					"protocol": "https",
+					"host": [
+						"theurbanwild",
+						"restlet",
+						"net"
+					],
+					"path": [
+						"v1",
+						"things",
+						""
+					],
+					"query": [
+						{
+							"key": "$size",
+							"value": "10",
+							"description": "pagination: number of items per page"
+						},
+						{
+							"key": "$page",
+							"value": "1",
+							"description": "pagination: page number"
+						}
+					]
+				},
+				"description": "Gets the first page of 10 species"
+			},
+			"response": []
+		},
+		{
+			"name": "GET sightings",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "https://theurbanwild.restlet.net/v1/events/?$size=10&$page=1",
+					"protocol": "https",
+					"host": [
+						"theurbanwild",
+						"restlet",
+						"net"
+					],
+					"path": [
+						"v1",
+						"events",
+						""
+					],
+					"query": [
+						{
+							"key": "$size",
+							"value": "10",
+							"description": "pagination: number of items per page"
+						},
+						{
+							"key": "$page",
+							"value": "1",
+							"description": "pagination: page number"
+						}
+					]
+				},
+				"description": "Gets a list of sighting events"
+			},
+			"response": []
+		}
+	]
+}
