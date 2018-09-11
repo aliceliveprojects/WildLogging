@@ -3,11 +3,11 @@
 
 	angular
 		.module('app.homeState', [
-			'ionic',
+			'ui.router',
       'toaster',
       'ngAnimate'
 		])
-		.config(function($stateProvider) {
+		.config(function($stateProvider, $urlRouterProvider) {
 			$stateProvider
 				.state('home', {
 					url: '/home',
@@ -15,5 +15,6 @@
 					controller: 'homeCtrl as vm',
 					cache: false
 				});
+			$urlRouterProvider.otherwise('/home');
 		});
 })();

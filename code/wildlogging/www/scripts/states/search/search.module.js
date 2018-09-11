@@ -3,7 +3,6 @@
 
 	angular
 		.module('app.searchState', [
-			'ionic',
       'app.connectionError'
 		])
 		.config(function($stateProvider) {
@@ -17,12 +16,6 @@
             longitude:null
           },
           resolve: {
-/*            postcode: function(locationsSrvc) {
-              return locationsSrvc.getPostcodes( {
-                latitude:  $state.params.latitude,
-                longitude: $state.params.longitude
-              }, 100 );
-            },*/
             location: ['$stateParams','locationsSrvc', function( $stateParams, locationsSrvc )  {
               return locationsSrvc.getLocation( $stateParams.postcode ).then(
                 function gotOkay( location ) {
@@ -69,9 +62,6 @@
                   return locationsSrvc.locationToPostcode(position);
                 } )
                 .catch( function(error) {
-                  // this should catch exceptions
-                  //alert(error);
-                  //o$stateProvider.go('about'); // TODO: should be error
                   return(undefined);
                 } )
               ;

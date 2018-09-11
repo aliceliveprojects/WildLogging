@@ -3,7 +3,6 @@
 
 	angular
 		.module('app.aboutState', [
-			'ionic'
 		])
 		.config(function($stateProvider) {
 			$stateProvider

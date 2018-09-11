@@ -1,6 +1,6 @@
-<ion-view>
-    <ion-header-bar class="bar-dark">
-      <button class="button button-icon icon ion-arrow-left-c" ng-click="vm.goHome()"></button>
+<uiview>
+    <div id="header" class="bar-dark">
+      <button class="button button-icon icon ion-arrow-left-c" ng-click="vm.goHome()">←</button>
       <h1 class="title">Wild Logs</h1>
       <button class="button button-icon" side="right" ng-show="vm.busy">
         <div class="loading-spinner" >
@@ -20,17 +20,16 @@
           </div>
         </div>
       </button>
-    </ion-header-bar>
+    </div>
 
-    <ion-content data-tap-disabled="true" class="has-header has-footer" scroll="false">
-      <div
-        id="mymap"
-        style="height: 100%;">
-      </div>
 
-    </ion-content>
+    <div
+      id="mymap"
+      style="height: 100%;">
+    </div>
 
-    <ion-footer-bar class="bar-dark">
+
+    <div id="footer" class="bar-dark">
       <div
         id="date-selectors"
       >
@@ -80,6 +79,6 @@
         </div>
       </div>
 
-    </ion-footer-bar>
-</ion-view>
+    </div>
+</uiview>
 

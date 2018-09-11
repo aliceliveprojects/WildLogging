@@ -6,7 +6,6 @@
       .controller('searchCtrl', searchCtrl);
 
   searchCtrl.$inject = [
-    '$ionicPlatform',
     '$q',
     '$scope',
     '$timeout',
@@ -22,7 +21,6 @@
   ];
 
   function searchCtrl(
-    $ionicPlatform,
     $q,
     $scope,
     $timeout,
@@ -36,17 +34,10 @@
     postcode
   ) {
 
-    //console.log("\n\n•• searchCtrl: location, postcode - ",location,postcode);
-
     var vm = angular.extend(this, {
     });
 
     vm.busy = true;
-
-    vm.hardwareBackButton = $ionicPlatform.registerBackButtonAction(function() {
-        //called when hardware back button pressed
-    }, 100);
-    $scope.$on('$destroy', vm.hardwareBackButton);
 
     var startingZoom = 16;
     var currentMapZoom = startingZoom;
@@ -54,14 +45,14 @@
 
     vm.mapData = []; // dirty hack to work around having to filter client-side; this should be better handled with a service to store and manage data
 
-    vm.fromDate = null;
+    vm.fromDate = undefined;
     vm.fromDateOpened = false;
     vm.handleFromDateOpen = function handleFromDateOpen(){
       vm.fromDateOpened = true;
       vm.toDateOpened = false;
     };
 
-    vm.toDate = null;
+    vm.toDate = undefined;
     vm.toDateOpened = false;
     vm.handleToDateOpen = function handleToDateOpen(){
       vm.toDateOpened = true;
@@ -196,7 +187,7 @@
         var popup = L.popup()
             .setLatLng(a.layer.getLatLng())
             .setContent(
-              "<table class='species-cluster'><thead><tr><td class='first'>Species</td><td>Date</td><td>Time</td><td>Location</td></tr></thead><tbody>"+
+              "<table class='species-cluster'><thead><tr><th class='first'>Species</th><th>Date</th><th>Time</th><th>Location</th></tr></thead><tbody>"+
                 (a.layer.getAllChildMarkers().reduce(function(flat,toFlatten){
                   return( flat+"<tr>"+"<td class='name'>"+toFlatten.options.species+"</td>"+"<td>"+[ toFlatten.options.date, toFlatten.options.time, toFlatten.options.location].join("</td><td>")+"</td></tr>" );
                 },""))+
@@ -214,7 +205,7 @@
       if (mymap.getZoom()<currentMapZoom) {
         getCenterAndRadius();
       }
-      getCenterAndRadius();
+      //getCenterAndRadius();
       currentMapZoom = mymap.getZoom();
     }
 
@@ -287,9 +278,6 @@
       );
     }
 
-//////
-
-
     vm.clearMap = function(){
       removeAllMarkers();
     };
@@ -305,7 +293,6 @@
 
     // find what's there
     if( location.postcode ) {
-      //console.log("refresingMap! ... ");
       vm.refreshMap( location.postcode );
     }
 

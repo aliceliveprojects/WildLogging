@@ -17,7 +17,6 @@
   //
 
   speciesSrvc.$inject = [
-    '$ionicPlatform',
     '$q',
     '$timeout',
     '$sce',
@@ -25,7 +24,6 @@
     'theurbanwild'
   ];
   function speciesSrvc(
-    $ionicPlatform,
     $q,
     $timeout,
     $sce,
@@ -127,14 +125,13 @@
   //
 
   sightingsSrvc.$inject = [
-    '$ionicPlatform',
+/*    '$ionicPlatform', */
     '$q',
     '$timeout',
     '$http',
     'theurbanwild'
   ];
   function sightingsSrvc(
-    $ionicPlatform,
     $q,
     $timeout,
     $http,

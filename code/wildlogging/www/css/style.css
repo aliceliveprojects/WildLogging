@@ -1,17 +1,112 @@
 /* Empty. Add your own CSS if you like */
+div#header {
+	width:100%;
+	height:3em;
+	overflow:none;
+	border-bottom:1px solid black;
+	background: linear-gradient(to bottom, #28343b 0%,#828c95 69%,#b5bdc8 100%);
+}
+	div#header>h1 {
+		text-align: left;
+		width: 100%;
+		font-size: 2em;
+		margin-top: -1.5em;
+		position: relative;
+		color: white;
+		clear: both;
+		left: 64px;
+		user-select: none;	
+	}
+	div#header>:last-child {
+		float: right;
+		position: fixed;
+		top:0;
+		right:0;
+	}
+	
+div#footer {
+	height:3em;
+	position:fixed;
+	bottom:0;
+	background-color:silver;
+	padding:4px;
+	z-index:10;
+}
+
+uiview {
+	top:0;
+	bottom:0;
+	left:0;
+	right:0;
+	position:fixed;
+}
+
+uiview>div {
+	z-index:1;
+}
+
 div.home-page {
   padding:4px;
 }
-input.form-control {
+
+div.about {
+	padding:4px 20px;
+}
+
+/* button butchery */
+
+button.button {
+	width:50px;
+	height:50px;
+	display: block;
+	border-radius: 8px;
+	color: white;
+	border: none;
+	background-color: rgba(0,0,0,0) !important;
+	font-size:2em !important;
+	font-weight:900;
+}
+
+/* elements */
+
+div.form-group>input.form-control {
   margin-right: 80px ;
-  width: inherit;
+  padding:.1em .5em .1em 1.25em !important;
+  width: 100%;
   display: inline-block;
 }
 div.form-group>label {
   display: block;
+  clear:both;
+  margin-top:1em;
+ }
+  div.form-group>span.confirmation {
+		float: right;
+		position: relative;
+		right: 2em;
+		top: -2em;
+		height:0;width:0;
+  }
+  
+div.buttons {
+	margin-top:1em;
+	position:fixed;
+	bottom: 1em;
+	right: 3em;
 }
+	div.buttons>button {
+		border-radius: 8px;
+		border-style: solid;
+		xmargin: 0 20px;
+	}
+
 table.species-cluster {
 
+}
+
+table.species-cluster>thead>tr, table.species-cluster>tbody>tr {
+	width:100%;
+	display:block;
 }
 table.species-cluster>thead>tr {
   border-bottom: 1px solid black;
@@ -19,11 +114,25 @@ table.species-cluster>thead>tr {
   font-weight: 900;
   color: #555;
 }
-table.species-cluster>thead>tr>td {
+table.species-cluster>thead>tr>th {
   padding-left: .25em;
+  width: 25%;
 }
 table.species-cluster>thead>tr>td.first {
   padding-left: 0;
+}
+table.species-cluster>tbody, table.species-cluster>thead {
+	display: block;
+	width: 100% !important;
+}
+table.species-cluster>tbody>tr, table.species-cluster>thead>tr {
+	width: 100%;
+	display: inline-block;	
+}
+	
+table.species-cluster>tbody {
+	height: 100px !important;
+	overflow-y: auto;
 }
 table.species-cluster>tbody>tr {
   margin-bottom:.15em;
@@ -44,6 +153,10 @@ table.species-cluster>tbody>tr>td.name {
   color: black;
   white-space: normal;
 }
+table.species-cluster>tbody>tr>td:nth-child(1), table.species-cluster>thead>tr>th:nth-child(1) { min-width: 130px; }
+table.species-cluster>tbody>tr>td:nth-child(2), table.species-cluster>thead>tr>th:nth-child(2) { min-width: 70px; }
+table.species-cluster>tbody>tr>td:nth-child(3), table.species-cluster>thead>tr>th:nth-child(3) { min-width: 50px; }
+table.species-cluster>tbody>tr>td:nth-child(4), table.species-cluster>thead>tr>th:nth-child(4) { width: 50px; }
 
 div#date-selectors {
   z-index:5;
@@ -75,8 +188,22 @@ div.date-block>span.input-group>input.form-control {
 }
 ul.dropdown-menu {
   /* make the drop-down list scrollable and overflowable! */
+  margin-top:-4px;
   height:50% !important;
   overflow-y: scroll;
+  padding-top:0 !important;
+}
+
+div.home-page>*>div.form-group {
+	margin-top: 1em;
+	margin-left: 1em;
+	margin-right:2em;
+}
+
+div.form-group>div.loading-spinner {
+	position: absolute;
+	right:4px;
+	margin-top:-2em;
 }
 
 div.loading-spinner {
@@ -269,3 +396,4 @@ div.loading-spinner>div.sk-fading-circle {
   font-weight: bold;
   font-family: 'arial', 'sans-serif';
 }
+

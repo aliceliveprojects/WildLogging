@@ -6,7 +6,6 @@
     .controller('homeCtrl', homeCtrl);
 
   homeCtrl.$inject = [
-    '$ionicPlatform',
     '$scope',
     '$timeout',
     '$q',
@@ -14,12 +13,10 @@
     'speciesSrvc',
     'sightingsSrvc',
     '$state',
-    '$ionicSideMenuDelegate',
     'toaster'
   ];
 
   function homeCtrl(
-    $ionicPlatform,
     $scope,
     $timeout,
     $q,
@@ -27,17 +24,16 @@
     speciesSrvc,
     sightingsSrvc,
     $state,
-    $ionicSideMenuDelegate,
     toaster
   ) {
     var vm = angular.extend(this, {
 
     });
 
-/*    vm.homeForm={
+    vm.homeForm={
       postcode:"",
       species:""
-      };*/
+    };
 
     vm.postcode="";
     vm.species="";
@@ -48,26 +44,15 @@
     vm.myPostcode = "";
     vm.postcodeValidator = locationsSrvc.POSTCODE_VALIDATION_REGEX;
 
-    vm.hardwareBackButton = $ionicPlatform.registerBackButtonAction(function() {
-        //called when hardware back button pressed
-    }, 100);
-
     $scope.$on( '$stateChangeSuccess', vm.initialiseView );
-
-    $scope.$on( '$destroy', vm.hardwareBackButton);
 
     //Controller below
     vm.initialiseView = function initialiseView() {
-      console.log("INITIALISING VIEW");
       vm.handleIsMyLocation();
     };
 
     vm.setform = function setform(f){
       console.log("vm.setform - got ",f);
-    };
-
-    vm.toggleLeftMenu = function() {
-      $ionicSideMenuDelegate.toggleLeft();
     };
 
     vm.goSearch = function() {
@@ -218,14 +203,9 @@
     ////
 
     vm.maybeSetPostcodeToHere = function maybeSetPostcodeToHere( newpostcode ) {
-      //if(vm.postcode==="") {
-      if(vm.homeForm.postcode.$pristine) {
-        vm.myPostcode = newpostcode;
-        vm.postcode = newpostcode;
-        vm.homeForm.postcode.$setValidity( "postcode", true );
-        vm.homeForm.postcode.$valid = true;
-        vm.revalidateForm();
-      }
+      vm.myPostcode = newpostcode;
+      vm.postcode = newpostcode;
+      vm.revalidateForm();
     };
 
     vm.handleIsMyLocation = function handleIsMyLocation() {
