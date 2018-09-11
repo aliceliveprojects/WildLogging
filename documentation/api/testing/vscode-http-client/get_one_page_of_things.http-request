@@ -1,0 +1,11 @@
+{
+  "body": {
+    "content": "",
+    "file": false,
+    "fileSize": false
+  },
+  "headers": {},
+  "method": "GET",
+  "title": "GET 1 Page of things",
+  "url": "https://theurbanwild.restlet.net:443/v1/things/?$page=1&$size=10"
+}

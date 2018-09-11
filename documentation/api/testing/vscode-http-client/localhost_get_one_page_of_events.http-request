@@ -1,0 +1,11 @@
+{
+  "body": {
+    "content": "",
+    "file": false,
+    "fileSize": false
+  },
+  "headers": {},
+  "method": "GET",
+  "title": "Local Host GET 1 Page of events",
+  "url": "http://localhost:8080/v1/events/?$page=1&$size=10"
+}
