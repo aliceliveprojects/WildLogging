@@ -6,3 +6,6 @@ A web application for logging urban wildlife.
 * [See our deliveries in this repo](https://github.com/TheUrbanWild/WildLogging/tree/master/documentation/deliveries)
 * [See our investigations demo](https://theurbanwildtest.github.io/)  
 * [See the running web application](https://theurbanwild.github.io/WildLogging/)  
+* [See our development write up](https://digitallabs.mmu.ac.uk/taming-the-urban-wild/)
+
+
