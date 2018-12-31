@@ -32,7 +32,7 @@
   ) {
     var service = {};
 
-    service.baseRestletURL = "https://theurbanwild.restlet.net/v1/";
+    service.baseRestletURL = "https://urbanwilddbapi.herokuapp.com/";
 
     theurbanwild.configureHTTP_BASICAuthentication( window.urbanwildcredentials.restlet.user, window.urbanwildcredentials.restlet.pass );
 
@@ -139,7 +139,7 @@
   ) {
     var service = {};
 
-    service.baseRestletURL = "https://theurbanwild.restlet.net/v1/";
+    service.baseRestletURL = "https://urbanwilddbapi.herokuapp.com/";
 
     service.getSightings = function getSightings( postcode, dateFrom, dateTo, thingsReference ) {
       // sightings are 'events'

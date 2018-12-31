@@ -8,7 +8,7 @@
 
   function theurbanwild ($http) {
 
-    var endpoint = 'https://theurbanwild.restlet.net/v1';
+    var endpoint = 'https://urbanwilddbapi.herokuapp.com';
     var globalSecurity = {};
     var securityConfigurations = {};
 

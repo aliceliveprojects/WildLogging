@@ -13,7 +13,7 @@
 				"header": [],
 				"body": {},
 				"url": {
-					"raw": "https://theurbanwild.restlet.net/v1/things/?$size=10&$page=1",
+					"raw": "https://urbanwilddbapi.herokuapp.com/things/?$size=10&$page=1",
 					"protocol": "https",
 					"host": [
 						"theurbanwild",
@@ -49,7 +49,7 @@
 				"header": [],
 				"body": {},
 				"url": {
-					"raw": "https://theurbanwild.restlet.net/v1/events/?$size=10&$page=1",
+					"raw": "https://urbanwilddbapi.herokuapp.com/events/?$size=10&$page=1",
 					"protocol": "https",
 					"host": [
 						"theurbanwild",

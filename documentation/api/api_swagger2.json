@@ -9,8 +9,8 @@
       "email" : "profdevlecture2a@gmail.com"
     }
   },
-  "host" : "theurbanwild.restlet.net",
-  "basePath" : "/v1",
+  "host" : "urbanwilddbapi.herokuapp.com",
+  "basePath" : "/",
   "tags" : [ {
     "name" : "wildlifelog",
     "description" : "Imported from wildlifelog"
