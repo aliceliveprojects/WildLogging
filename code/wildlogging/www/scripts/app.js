@@ -13,11 +13,13 @@ angular.module('starter', [
 //  	'ng-datalist',
   'ui-notification',
   'app.homeState',
+  'app.adminState',
   'app.searchState',
   'app.aboutState',
   'app.locations',
   'app.api',
-  'restlet.sdk'
+  'restlet.sdk',
+  'toaster'
 ])
   .config(function($sceDelegateProvider){
     $sceDelegateProvider.resourceUrlWhitelist([
@@ -27,8 +29,8 @@ angular.module('starter', [
   })
   .run(function($state, $rootScope, Notification, authenticationService) {
 
-    $rootScope.isAuthenticated = authenticationService.isAuthenticated();
-    console.log("app.js:run - isAuthenticated = ",$rootScope.isAuthenticated);
+//    $rootScope.isAuthenticated = authenticationService.isAuthenticated();
+//    console.log("app.js:run - isAuthenticated = ",$rootScope.isAuthenticated);
 
     $rootScope.$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams, error) {
       event.preventDefault();

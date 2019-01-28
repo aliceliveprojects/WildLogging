@@ -1,5 +1,14 @@
-var app = angular.module('starter')
-  .service('authenticationNotifyService',['$log',function($log){
+var starter = angular.module('starter')
+    .service('authenticationNotifyService',authenticationNotifyService);
+
+authenticationNotifyService.$inject = [
+  '$log'
+];
+
+
+function authenticationNotifyService(
+  $log
+){
 
   var self = this;
   var controllers = new Map();
@@ -30,6 +39,6 @@ var app = angular.module('starter')
   function uniqueId() {
     return 'id-' + Math.random().toString(36).substr(2, 16);
   }
-
-}]);
+  return this;
+}
 
