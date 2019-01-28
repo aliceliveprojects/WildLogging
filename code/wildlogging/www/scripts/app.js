@@ -11,21 +11,24 @@ angular.module('starter', [
   //	'mgcrea.ngStrap',
   	'ui.bootstrap',
 //  	'ng-datalist',
-  	'ui-notification',
-  	'app.homeState',
-  	'app.searchState',
-  	'app.aboutState',
-  	'app.locations',
-  	'app.api',
-  	'restlet.sdk'
-	])
+  'ui-notification',
+  'app.homeState',
+  'app.searchState',
+  'app.aboutState',
+  'app.locations',
+  'app.api',
+  'restlet.sdk'
+])
   .config(function($sceDelegateProvider){
     $sceDelegateProvider.resourceUrlWhitelist([
       'self',
       "https://www.itis.gov/**"
     ]);
   })
-  .run(function($state, $rootScope, Notification) {
+  .run(function($state, $rootScope, Notification, authenticationService) {
+
+    $rootScope.isAuthenticated = authenticationService.isAuthenticated();
+    console.log("app.js:run - isAuthenticated = ",$rootScope.isAuthenticated);
 
     $rootScope.$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams, error) {
       event.preventDefault();
@@ -34,6 +37,6 @@ angular.module('starter', [
       return $state.go('about');
     });
     //console.log("going to state:home");
-    //$state.transitionTo("home");    
+    //$state.transitionTo("home");
   });
 
