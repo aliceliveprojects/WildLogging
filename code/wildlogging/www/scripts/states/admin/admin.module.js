@@ -20,6 +20,14 @@
           templateUrl: 'scripts/states/admin/templates/adminauth.html',
           controller: 'adminAuthCtrl as vm',
           cache: false
-        });
+        })
+        .state('adminevents', {
+          url: '/admin/events/',
+          templateUrl: 'scripts/states/admin/templates/admin-events.html',
+          controller: 'adminEventsCtrl as vm',
+          cache:false,
+          resolve: {}
+        })
+      ;
     });
 })();
