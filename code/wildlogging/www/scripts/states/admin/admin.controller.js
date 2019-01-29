@@ -11,12 +11,16 @@
 
   adminCtrl.$inject = [
     '$scope',
-    '$state'
+    '$state',
+    'authenticationService',
+    'authenticationNotifyService'
   ];
 
   function adminCtrl(
     $scope,
-    $state
+    $state,
+    authenticationService,
+    authenticationNotifyService
   ){
     var vm = angular.extend(this, {});
     vm.isAuthenticated = false;

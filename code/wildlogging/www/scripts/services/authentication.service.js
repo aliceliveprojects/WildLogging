@@ -1,15 +1,18 @@
-var starter = angular.module('starter')
-    .service('authenticationService', authenticationService);
+(function(){
+  'use strict';
 
-authenticationService.$inject = [
-  '$log',
-  'authenticationNotifyService'
-];
+  angular.module('app.auth', [ 'app.auth.notify' ] )
+    .factory('authenticationService', authenticationService);
 
-function authenticationService(
-  $log,
-  authenticationNotifyService
-) {
+  authenticationService.$inject = [
+    '$log' ,
+    'authenticationNotifyService' 
+  ];
+
+  function authenticationService(
+    $log ,
+    authenticationNotifyService 
+  ) {
   var self = this;
   var lock = null;
   var options = {
@@ -67,4 +70,6 @@ function authenticationService(
       console.log(authResult.idToken);
     });
   });
-}
+    return this;
+  }
+})();

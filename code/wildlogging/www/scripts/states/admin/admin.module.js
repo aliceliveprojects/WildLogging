@@ -4,7 +4,8 @@
   angular
     .module('app.adminState', [
       'ui.router',
-      'ngAnimate'
+      'ngAnimate',
+      'app.auth'
      ])
     .config(function($stateProvider, $urlRouterProvider) {
       $stateProvider

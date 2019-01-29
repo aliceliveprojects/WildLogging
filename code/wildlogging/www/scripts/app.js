@@ -19,6 +19,7 @@ angular.module('starter', [
   'app.locations',
   'app.api',
   'restlet.sdk',
+  'app.auth',
   'toaster'
 ])
   .config(function($sceDelegateProvider){
@@ -27,7 +28,7 @@ angular.module('starter', [
       "https://www.itis.gov/**"
     ]);
   })
-  .run(function($state, $rootScope, Notification, authenticationService) {
+  .run(function($state, $rootScope, Notification /*, authenticationService*/) {
 
 //    $rootScope.isAuthenticated = authenticationService.isAuthenticated();
 //    console.log("app.js:run - isAuthenticated = ",$rootScope.isAuthenticated);
