@@ -28,7 +28,7 @@
     }
   };
 
-  self.initialize = function () {/
+  self.initialize = function () {
     if (lock == null) {
       lock = new Auth0Lock(
         window.auth_config.AUTH0_CLIENT_ID,
