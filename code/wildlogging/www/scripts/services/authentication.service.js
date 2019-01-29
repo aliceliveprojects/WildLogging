@@ -17,8 +17,11 @@
   var lock = null;
   var options = {
     autoclose: true,
+    scope: "openid profile email",
     auth: {
+      scope: "openid profile email",
       responseType: "token id_token",
+      mustAcceptTerms: true,
       redirect: false
       //redirectUrl: window.auth_config.AUTH0_CALLBACK_URL,
       //audience: window.auth_config.AUTH0_AUDIENCE

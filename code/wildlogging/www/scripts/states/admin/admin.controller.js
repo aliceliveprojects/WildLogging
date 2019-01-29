@@ -12,6 +12,7 @@
   adminCtrl.$inject = [
     '$scope',
     '$state',
+    '$log',
     'authenticationService',
     'authenticationNotifyService'
   ];
@@ -19,11 +20,12 @@
   function adminCtrl(
     $scope,
     $state,
+    $log,
     authenticationService,
     authenticationNotifyService
   ){
     var vm = angular.extend(this, {});
-    vm.isAuthenticated = false;
+    vm.isAuthenticated = authenticationService.isAuthenticated();
     //--
     vm.login = function () {
       authenticationNotifyService.subscribe('auth0',callback);

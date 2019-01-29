@@ -28,10 +28,10 @@ angular.module('starter', [
       "https://www.itis.gov/**"
     ]);
   })
-  .run(function($state, $rootScope, Notification /*, authenticationService*/) {
+  .run(function($state, $rootScope, Notification, authenticationService) {
 
-//    $rootScope.isAuthenticated = authenticationService.isAuthenticated();
-//    console.log("app.js:run - isAuthenticated = ",$rootScope.isAuthenticated);
+    $rootScope.isAuthenticated = authenticationService.isAuthenticated();
+    console.log("app.js:run - isAuthenticated = ",$rootScope.isAuthenticated);
 
     $rootScope.$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams, error) {
       event.preventDefault();
