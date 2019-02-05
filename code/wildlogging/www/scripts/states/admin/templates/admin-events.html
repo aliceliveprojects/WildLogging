@@ -16,9 +16,21 @@
   <div class="admin-page home-page">
     <div ng-if='vm.isAuthenticated===true'>
       <h2>Urban Wild: Administration: Events</h2>
-      <ion-list >
-        <ion-item ng-click="vm.admin('events');">Events</ion-item>
-      </ion-list>
+      <ul class="list-group" >
+        <li class="list-group-item flex-column align-items-start item-remove-animate item item-complex" ng-repeat="item in vm.events | orderBy:'-date' ">
+          <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1">{{item.label}}</h5>
+            <small>{{item.humanDate}}</small>
+            <span class="pull-right">
+              <button type="button" class="btn btn-danger list-group-item-action" ng-click="vm.deleteItem({ref:item.id})">
+              Delete
+              </button>
+            </span>
+          </div>
+          <p>{{item.postcode}}</p>
+          </div>
+        </li>
+      </ul>
     </div>
     <div ng-if='vm.isAuthenticated!==true'>
       <h2>Please authenticate.</h2>
