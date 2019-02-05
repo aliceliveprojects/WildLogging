@@ -32,9 +32,9 @@
   ) {
     var service = {};
 
-    service.baseRestletURL = "https://urbanwilddbapi.herokuapp.com/";
+    service.baseApiURL = "https://urbanwilddbapi.herokuapp.com/";
 
-    theurbanwild.configureHTTP_BASICAuthentication( window.urbanwildcredentials.restlet.user, window.urbanwildcredentials.restlet.pass );
+//    theurbanwild.configureHTTP_BASICAuthentication( window.urbanwildcredentials.restlet.user, window.urbanwildcredentials.restlet.pass );
 
     // methods as per https://trello.com/c/3sLYXMgq/64-species-service
 
@@ -74,30 +74,43 @@
     };
 
     service.getRegisteredSpecies = function getRegisteredSpecies( speciesName ) {
-      var endpointUri = service.baseRestletURL + "things/?name="+encodeURIComponent( speciesName );
+      var endpointUri = service.baseApiURL + "things/?name="+encodeURIComponent( speciesName );
       return($http({method:"GET",url:endpointUri}));
     };
 
     service.getSpeciesFromId = function getSpeciesFromId( idString ) {
-      var endpointUri = service.baseRestletURL + "things/" + idString;
+      var endpointUri = service.baseApiURL + "things/" + idString;
       return($http({method:"GET",url:endpointUri}));
     };
 
     // inserts a species based on name. Should not create duplicate ites
     service.registerSpecies = function registerSpecies( speciesName ) {
       var registerSpeciesDoesNotExist = function registerSpeciesDoesNotExist( error ) {
-        return theurbanwild.postThings({
-          "name": speciesName
+        var endpointUri = service.baseApiURL + "things/";
+        return($http({
+          method:"GET",
+          url:endpointUri,
+          headers:{
+//            'Authorization':'bearer '+localStorage.getItem("accessToken")
+            'Authorization': 'Basic ' + window.btoa(
+              window.urbanwildcredentials.restlet.user+":"+
+                window.urbanwildcredentials.restlet.pass
+            )
+          },
+          params:{
+            'name': speciesName
+          }
         }).then(
           function registerSpeciesFinal( data ) {
             console.log("registerSpecies: created a new ", speciesName );
-            return data.data;
+            // this used to return the species name in data.data but no longer
+            return /*speciesName; //*/data.data;
           },
           function registerSpeciesFinalError( error ) {
             console.log( "registerSpeciesFinalError: ", error );
             return error;
           }
-        );
+        ));
       };
 
       return(
@@ -139,7 +152,7 @@
   ) {
     var service = {};
 
-    service.baseRestletURL = "https://urbanwilddbapi.herokuapp.com/";
+    service.baseApiURL = "https://urbanwilddbapi.herokuapp.com/";
 
     service.getSightings = function getSightings( postcode, dateFrom, dateTo, thingsReference ) {
       // sightings are 'events'
@@ -164,9 +177,7 @@
         parameters = addParameter( parameters, "thing", thingsReference );
       }
 
-      var endpointUri = service.baseRestletURL + "events/?"+parameters;
-
-      //console.log( "sightingsSrvc.getSightings: getting  "+endpointUri );
+      var endpointUri = service.baseApiURL + "events/?"+parameters;
 
       return($http({method:"GET",url:endpointUri}));
     };
@@ -185,13 +196,35 @@
       if( angular.isDefined( thingsReference ) ) {
         event.thing = thingsReference;
       }
-      //console.log( "sightingsSrvc.registerSighting registering ", event );
-      return theurbanwild.postEvents( event );
+      console.log( "sightingsSrvc.registerSighting registering ", event );
+
+      var endpointUri = service.baseApiURL + "events/";
+      return $http({
+        method:"POST",
+        url:endpointUri,
+//        headers:{
+////            'Authorization':'bearer '+localStorage.getItem("accessToken")
+//          'Authorization': 'Basic ' + window.btoa(
+//            window.urbanwildcredentials.restlet.user+":"+
+//              window.urbanwildcredentials.restlet.pass
+//          )
+//        },
+        data: event
+      });
     };
 
     service.deleteSighting = function( ref ) {
       console.log("api.service.js:sightingSrvc.deleteSighting", ref);
-      return theurbanwild.deleteEventsEventid( ref );
+
+      var endpointUri = service.baseApiURL + "events/" + ref;
+      return $http({
+        method:"DELETE",
+        url:endpointUri,
+        headers:{
+          'Authorization':'bearer '+localStorage.getItem("accessToken")
+        },
+      });
+
     };
 
     // standardises a postcode for data storage
