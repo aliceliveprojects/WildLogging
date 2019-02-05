@@ -189,6 +189,11 @@
       return theurbanwild.postEvents( event );
     };
 
+    service.deleteSighting = function( ref ) {
+      console.log("api.service.js:sightingSrvc.deleteSighting", ref);
+      return theurbanwild.deleteEventsEventid( ref );
+    };
+
     // standardises a postcode for data storage
     // @TODO, maybe - for now just returns inbounf postcode
     var sanitisePostcode = function sanitisePostcode( postcode ) {
